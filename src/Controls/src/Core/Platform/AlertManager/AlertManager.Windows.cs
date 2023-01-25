@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls.Internals;
@@ -10,32 +11,30 @@ namespace Microsoft.Maui.Controls.Platform
 {
 	internal partial class AlertManager
 	{
-		readonly List<AlertRequestHelper> Subscriptions = new List<AlertRequestHelper>();
-
-		internal void Subscribe(Window window)
+		private partial bool TryCreateSubscription([MaybeNullWhen(false)] out AlertRequestHelper subscription)
 		{
-			var platformWindow = window.MauiContext.GetPlatformWindow();
+			var platformWindow = Window.MauiContext.GetPlatformWindow();
 
 			if (Subscriptions.Any(s => s.Window == platformWindow))
-				return;
-
-			Subscriptions.Add(new AlertRequestHelper(platformWindow, window.MauiContext));
-		}
-
-		internal void Unsubscribe(Window window)
-		{
-			var platformWindow = window.MauiContext.GetPlatformWindow();
-
-			var toRemove = Subscriptions.Where(s => s.Window == platformWindow).ToList();
-
-			foreach (AlertRequestHelper alertRequestHelper in toRemove)
 			{
-				alertRequestHelper.Dispose();
-				Subscriptions.Remove(alertRequestHelper);
+				subscription = null;
+				return false;
 			}
+
+			subscription = new AlertRequestHelper(platformWindow, Window.MauiContext);
+			return true;
 		}
 
-		internal sealed class AlertRequestHelper : IDisposable
+		private partial AlertRequestHelper[] GetSubscriptions()
+		{
+			var platformWindow = Window.MauiContext.GetPlatformWindow();
+
+			var subs = Subscriptions.Where(s => s.Window == platformWindow);
+
+			return subs.ToArray();
+		}
+
+		internal sealed partial class AlertRequestHelper
 		{
 			static Task<bool>? CurrentAlert;
 			static Task<string?>? CurrentPrompt;
@@ -44,34 +43,17 @@ namespace Microsoft.Maui.Controls.Platform
 			{
 				Window = window;
 				MauiContext = mauiContext;
-
-#pragma warning disable CS0618 // TODO: Remove when we internalize/replace MessagingCenter
-				MessagingCenter.Subscribe<Page, bool>(Window, Page.BusySetSignalName, OnPageBusy);
-				MessagingCenter.Subscribe<Page, AlertArguments>(Window, Page.AlertSignalName, OnAlertRequested);
-				MessagingCenter.Subscribe<Page, PromptArguments>(Window, Page.PromptSignalName, OnPromptRequested);
-				MessagingCenter.Subscribe<Page, ActionSheetArguments>(Window, Page.ActionSheetSignalName, OnActionSheetRequested);
-#pragma warning restore CS0618 // Type or member is obsolete
 			}
 
 			public UI.Xaml.Window Window { get; }
 			public IMauiContext MauiContext { get; }
 
-			public void Dispose()
-			{
-#pragma warning disable CS0618 // TODO: Remove when we internalize/replace MessagingCenter
-				MessagingCenter.Unsubscribe<Page, bool>(Window, Page.BusySetSignalName);
-				MessagingCenter.Unsubscribe<Page, AlertArguments>(Window, Page.AlertSignalName);
-				MessagingCenter.Unsubscribe<Page, PromptArguments>(Window, Page.PromptSignalName);
-				MessagingCenter.Unsubscribe<Page, ActionSheetArguments>(Window, Page.ActionSheetSignalName);
-#pragma warning restore CS0618 // Type or member is obsolete
-			}
-
-			void OnPageBusy(Page sender, bool enabled)
+			public partial void OnPageBusy(Page sender, bool enabled)
 			{
 				// TODO: Wrap the pages in a Canvas, and dynamically add a ProgressBar
 			}
 
-			async void OnAlertRequested(Page sender, AlertArguments arguments)
+			public async partial void OnAlertRequested(Page sender, AlertArguments arguments)
 			{
 				string content = arguments.Message ?? string.Empty;
 				string title = arguments.Title ?? string.Empty;
@@ -124,7 +106,7 @@ namespace Microsoft.Maui.Controls.Platform
 				CurrentAlert = null;
 			}
 
-			async void OnPromptRequested(Page sender, PromptArguments arguments)
+			public async partial void OnPromptRequested(Page sender, PromptArguments arguments)
 			{
 				var promptDialog = new PromptDialog
 				{
@@ -158,7 +140,7 @@ namespace Microsoft.Maui.Controls.Platform
 				CurrentPrompt = null;
 			}
 
-			void OnActionSheetRequested(Page sender, ActionSheetArguments arguments)
+			public partial void OnActionSheetRequested(Page sender, ActionSheetArguments arguments)
 			{
 				bool userDidSelect = false;
 

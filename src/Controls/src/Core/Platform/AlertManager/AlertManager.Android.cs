@@ -1,6 +1,7 @@
 ﻿#nullable disable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Android.App;
 using Android.Content;
@@ -21,35 +22,31 @@ namespace Microsoft.Maui.Controls.Platform
 {
 	internal partial class AlertManager
 	{
-		readonly List<AlertRequestHelper> Subscriptions = new List<AlertRequestHelper>();
-
-		internal void Subscribe(Window window)
+		private partial bool TryCreateSubscription([MaybeNullWhen(false)] out AlertRequestHelper subscription)
 		{
-			IMauiContext mauiContext = window?.MauiContext;
+			IMauiContext mauiContext = Window?.MauiContext;
 			Context context = mauiContext?.Context;
 			Activity activity = context.GetActivity();
 
 			if (Subscriptions.Any(s => s.Activity == activity))
 			{
-				return;
+				subscription = null;
+				return false;
 			}
 
-			Subscriptions.Add(new AlertRequestHelper(activity, mauiContext));
+			subscription = new AlertRequestHelper(activity, mauiContext);
+			return true;
 		}
 
-		internal void Unsubscribe(Window window)
+		private partial AlertRequestHelper[] GetSubscriptions()
 		{
-			IMauiContext mauiContext = window?.MauiContext;
+			IMauiContext mauiContext = Window?.MauiContext;
 			Context context = mauiContext?.Context;
 			Activity activity = context.GetActivity();
 
-			var toRemove = Subscriptions.Where(s => s.Activity == activity).ToList();
+			var subs = Subscriptions.Where(s => s.Activity == activity);
 
-			foreach (AlertRequestHelper alertRequestHelper in toRemove)
-			{
-				alertRequestHelper.Dispose();
-				Subscriptions.Remove(alertRequestHelper);
-			}
+			return subs.ToArray();
 		}
 
 		internal void ResetBusyCount(Activity context)
@@ -57,7 +54,7 @@ namespace Microsoft.Maui.Controls.Platform
 			Subscriptions.FirstOrDefault(s => s.Activity == context)?.ResetBusyCount();
 		}
 
-		internal sealed class AlertRequestHelper : IDisposable
+		internal sealed partial class AlertRequestHelper
 		{
 			int _busyCount;
 
@@ -65,41 +62,24 @@ namespace Microsoft.Maui.Controls.Platform
 			{
 				Activity = context;
 				MauiContext = mauiContext;
-
-#pragma warning disable CS0618 // TODO: Remove when we internalize/replace MessagingCenter
-				MessagingCenter.Subscribe<Page, bool>(Activity, Page.BusySetSignalName, OnPageBusy);
-				MessagingCenter.Subscribe<Page, AlertArguments>(Activity, Page.AlertSignalName, OnAlertRequested);
-				MessagingCenter.Subscribe<Page, PromptArguments>(Activity, Page.PromptSignalName, OnPromptRequested);
-				MessagingCenter.Subscribe<Page, ActionSheetArguments>(Activity, Page.ActionSheetSignalName, OnActionSheetRequested);
-#pragma warning restore CS0618 // Type or member is obsolete
 			}
 
 			public Activity Activity { get; }
 			public IMauiContext MauiContext { get; }
-
-			public void Dispose()
-			{
-#pragma warning disable CS0618 // TODO: Remove when we internalize/replace MessagingCenter
-				MessagingCenter.Unsubscribe<Page, bool>(Activity, Page.BusySetSignalName);
-				MessagingCenter.Unsubscribe<Page, AlertArguments>(Activity, Page.AlertSignalName);
-				MessagingCenter.Unsubscribe<Page, PromptArguments>(Activity, Page.PromptSignalName);
-				MessagingCenter.Unsubscribe<Page, ActionSheetArguments>(Activity, Page.ActionSheetSignalName);
-#pragma warning restore CS0618 // Type or member is obsolete
-			}
 
 			public void ResetBusyCount()
 			{
 				_busyCount = 0;
 			}
 
-			void OnPageBusy(IView sender, bool enabled)
+			public partial void OnPageBusy(Page sender, bool enabled)
 			{
 				_busyCount = Math.Max(0, enabled ? _busyCount + 1 : _busyCount - 1);
 
 				UpdateProgressBarVisibility(_busyCount > 0);
 			}
 
-			void OnActionSheetRequested(IView sender, ActionSheetArguments arguments)
+			public partial void OnActionSheetRequested(Page sender, ActionSheetArguments arguments)
 			{
 				// Verify that the page making the request is part of this activity 
 				if (!PageIsInThisContext(sender))
@@ -158,7 +138,7 @@ namespace Microsoft.Maui.Controls.Platform
 				}
 			}
 
-			void OnAlertRequested(IView sender, AlertArguments arguments)
+			public partial void OnAlertRequested(Page sender, AlertArguments arguments)
 			{
 				// Verify that the page making the request is part of this activity 
 				if (!PageIsInThisContext(sender))
@@ -238,7 +218,7 @@ namespace Microsoft.Maui.Controls.Platform
 				return TextDirection.Ltr;
 			}
 
-			void OnPromptRequested(IView sender, PromptArguments arguments)
+			public partial void OnPromptRequested(Page sender, PromptArguments arguments)
 			{
 				// Verify that the page making the request is part of this activity 
 				if (!PageIsInThisContext(sender))

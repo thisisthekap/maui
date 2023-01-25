@@ -195,12 +195,10 @@ namespace Microsoft.Maui.Controls
 			var args = new ActionSheetArguments(title, cancel, destruction, buttons);
 
 			args.FlowDirection = flowDirection;
-#pragma warning disable CS0618 // TODO: Remove when we internalize/replace MessagingCenter
 			if (IsPlatformEnabled)
-				MessagingCenter.Send(this, ActionSheetSignalName, args);
+				Window.AlertManager.RequestActionSheet(this, args);
 			else
-				_pendingActions.Add(() => MessagingCenter.Send(this, ActionSheetSignalName, args));
-#pragma warning restore CS0618 // Type or member is obsolete
+				_pendingActions.Add(() => Window.AlertManager.RequestActionSheet(this, args));
 
 			return args.Result.Task;
 		}
@@ -236,12 +234,10 @@ namespace Microsoft.Maui.Controls
 			var args = new AlertArguments(title, message, accept, cancel);
 			args.FlowDirection = flowDirection;
 
-#pragma warning disable CS0618 // TODO: Remove when we internalize/replace MessagingCenter
 			if (IsPlatformEnabled)
-				MessagingCenter.Send(this, AlertSignalName, args);
+				Window.AlertManager.RequestAlert(this, args);
 			else
-				_pendingActions.Add(() => MessagingCenter.Send(this, AlertSignalName, args));
-#pragma warning restore CS0618 // Type or member is obsolete
+				_pendingActions.Add(() => Window.AlertManager.RequestAlert(this, args));
 
 			return args.Result.Task;
 		}
@@ -251,12 +247,10 @@ namespace Microsoft.Maui.Controls
 		{
 			var args = new PromptArguments(title, message, accept, cancel, placeholder, maxLength, keyboard, initialValue);
 
-#pragma warning disable CS0618 // TODO: Remove when we internalize/replace MessagingCenter
 			if (IsPlatformEnabled)
-				MessagingCenter.Send(this, PromptSignalName, args);
+				Window.AlertManager.RequestPrompt(this, args);
 			else
-				_pendingActions.Add(() => MessagingCenter.Send(this, PromptSignalName, args));
-#pragma warning restore CS0618 // Type or member is obsolete
+				_pendingActions.Add(() => Window.AlertManager.RequestPrompt(this, args));
 
 			return args.Result.Task;
 		}
