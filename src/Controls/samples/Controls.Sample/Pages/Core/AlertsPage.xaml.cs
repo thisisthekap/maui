@@ -9,8 +9,6 @@ namespace Maui.Controls.Sample.Pages
 		public AlertsPage()
 		{
 			InitializeComponent();
-
-			DisplayAlert("Alert", "Before constructor", "Hello!");
 		}
 
 		protected override async void OnAppearing()

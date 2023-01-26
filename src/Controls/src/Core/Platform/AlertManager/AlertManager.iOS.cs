@@ -175,17 +175,17 @@ namespace Microsoft.Maui.Controls.Platform
 
 					if (pageController != null)
 					{
-						platformView.BeginInvokeOnMainThread(() =>
+						platformView.BeginInvokeOnMainThread(async () =>
 						{
-							pageController.PresentViewControllerAsync(alert, true);
+							await pageController.PresentViewControllerAsync(alert, true);
 						});
 						return;
 					}
 				}
 
-				platformView.BeginInvokeOnMainThread(() =>
+				platformView.BeginInvokeOnMainThread(async () =>
 				{
-					_ = platformView.RootViewController.PresentViewControllerAsync(alert, true);
+					await platformView.RootViewController.PresentViewControllerAsync(alert, true);
 				});
 			}
 		}
