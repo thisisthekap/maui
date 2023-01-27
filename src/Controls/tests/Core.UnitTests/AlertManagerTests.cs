@@ -81,7 +81,8 @@ namespace Microsoft.Maui.Controls.Core.UnitTests
 		{
 			var (window, sub) = CreateSubbedWindow();
 
-			window.Page = new ContentPage { IsBusy = true };
+			var page = new ContentPage { IsBusy = true };
+			window.Page = page;
 
 			Assert.Null(window.AlertManager.Subscription);
 		}
@@ -89,28 +90,13 @@ namespace Microsoft.Maui.Controls.Core.UnitTests
 		[Fact]
 		public void BusySentWhenBusyPageAppears()
 		{
+			var (window, sub) = CreateSubbedWindow();
+
 			var page = new ContentPage { IsBusy = true };
-			var app = new TestApp();
-			var window = app.CreateWindow(page);
+			window.Page = page;
 
-			var sub = Substitute.For<AlertManager.IAlertManagerSubscription>();
-
-			var services = Substitute.For<IServiceProvider>();
-			services.GetService(Arg.Is<Type>(x => x == typeof(AlertManager.IAlertManagerSubscription))).Returns(sub);
-
-			var mauiContext = Substitute.For<IMauiContext>();
-			mauiContext.Services.Returns(services);
-
-			var windowHandler = Substitute.For<IElementHandler>();
-			windowHandler.MauiContext.Returns(mauiContext);
-
-			window.Handler = windowHandler;
-			page.Handler = Substitute.For<IViewHandler>();
-
-			//var (window, sub) = CreateSubbedWindow();
-			//window.Page = page;
-
-			//page.SendNavigatedTo();
+			((IPageController)page).SendAppearing();
+			page.SendNavigatedTo(new NavigatedToEventArgs(null));
 
 			sub.Received().OnPageBusy(Arg.Is(page), Arg.Is(true));
 		}
@@ -123,6 +109,7 @@ namespace Microsoft.Maui.Controls.Core.UnitTests
 			window.Page = page;
 
 			((IPageController)page).SendAppearing();
+			page.SendNavigatedTo(new NavigatedToEventArgs(null));
 
 			sub.ClearReceivedCalls();
 
@@ -139,6 +126,7 @@ namespace Microsoft.Maui.Controls.Core.UnitTests
 			window.Page = page;
 
 			((IPageController)page).SendAppearing();
+			page.SendNavigatedTo(new NavigatedToEventArgs(null));
 
 			sub.ClearReceivedCalls();
 
@@ -155,6 +143,7 @@ namespace Microsoft.Maui.Controls.Core.UnitTests
 			window.Page = page;
 
 			((IPageController)page).SendAppearing();
+			page.SendNavigatedTo(new NavigatedToEventArgs(null));
 
 			sub.ClearReceivedCalls();
 
