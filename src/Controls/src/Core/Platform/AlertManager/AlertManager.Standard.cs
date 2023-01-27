@@ -5,15 +5,9 @@ namespace Microsoft.Maui.Controls.Platform
 {
 	internal partial class AlertManager
 	{
-		private partial bool TryCreateSubscription(out AlertRequestHelper subscription)
+		private partial IAlertManagerSubscription CreateSubscription(IMauiContext mauiContext)
 		{
-			subscription = null!;
-			return false;
-		}
-
-		private partial AlertRequestHelper[] GetSubscriptions()
-		{
-			return Array.Empty<AlertRequestHelper>();
+			throw new NotImplementedException();
 		}
 
 		internal partial class AlertRequestHelper

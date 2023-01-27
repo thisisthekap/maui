@@ -13,27 +13,11 @@ namespace Microsoft.Maui.Controls.Platform
 {
 	internal partial class AlertManager
 	{
-		private partial bool TryCreateSubscription([MaybeNullWhen(false)] out AlertRequestHelper subscription)
+		private partial IAlertManagerSubscription CreateSubscription(IMauiContext mauiContext)
 		{
 			var nativeWindow = Window?.MauiContext.GetPlatformWindow();
 			var modalStack = Window?.MauiContext.GetModalStack();
-			if (Subscriptions.Any(s => s.Window == nativeWindow))
-			{
-				subscription = null;
-				return false;
-			}
-
-			subscription = new AlertRequestHelper(nativeWindow, modalStack);
-			return true;
-		}
-
-		private partial AlertRequestHelper[] GetSubscriptions()
-		{
-			var nativeWindow = Window?.MauiContext.GetPlatformWindow();
-
-			var subs = Subscriptions.Where(s => s.Window == nativeWindow).ToList();
-
-			return subs.ToArray();
+			return new AlertRequestHelper(nativeWindow, modalStack);
 		}
 
 	internal sealed partial class AlertRequestHelper

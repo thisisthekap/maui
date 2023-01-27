@@ -15,27 +15,10 @@ namespace Microsoft.Maui.Controls.Platform
 {
 	internal partial class AlertManager
 	{
-		private partial bool TryCreateSubscription([MaybeNullWhen(false)] out AlertRequestHelper subscription)
+		private partial IAlertManagerSubscription CreateSubscription(IMauiContext mauiContext)
 		{
-			var platformWindow = Window.MauiContext.GetPlatformWindow();
-
-			if (Subscriptions.Any(s => s.PlatformView == platformWindow))
-			{
-				subscription = null;
-				return false;
-			}
-
-			subscription = new AlertRequestHelper(Window, platformWindow);
-			return true;
-		}
-
-		private partial AlertRequestHelper[] GetSubscriptions()
-		{
-			var platformWindow = Window.MauiContext.GetPlatformWindow();
-
-			var subs = Subscriptions.Where(s => s.PlatformView == platformWindow);
-
-			return subs.ToArray();
+			var platformWindow = mauiContext.GetPlatformWindow();
+			return new AlertRequestHelper(Window, platformWindow);
 		}
 
 		internal sealed partial class AlertRequestHelper

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Internals;
 
 namespace Microsoft.Maui.Controls.Platform
@@ -6,7 +6,8 @@ namespace Microsoft.Maui.Controls.Platform
 	internal partial class AlertManager
 	{
 		readonly Window _window;
-		readonly List<AlertRequestHelper> Subscriptions = new();
+
+		IAlertManagerSubscription? _subscription;
 
 		public AlertManager(Window window)
 		{
@@ -15,57 +16,56 @@ namespace Microsoft.Maui.Controls.Platform
 
 		public Window Window => _window;
 
+		public IAlertManagerSubscription? Subscription => _subscription;
+
 		public void Subscribe()
 		{
-			if (TryCreateSubscription(out var alertRequestHelper))
-				Subscriptions.Add(alertRequestHelper);
+			// this really should not be happening so we should probably log this
+			if (_subscription is not null)
+				return;
+
+			var context = _window.MauiContext;
+
+			_subscription =
+				// try use services
+				context.Services.GetService<IAlertManagerSubscription>() ??
+				// fall back to the platform implementation and a "null implementation" on non-platforms
+				CreateSubscription(context);
+
+			// this really should not be happening so we should probably log this
+			if (_subscription is null)
+				return;
 		}
 
-		public void Unsubscribe()
+		public void Unsubscribe() =>
+			_subscription = null;
+
+		public void RequestActionSheet(Page page, ActionSheetArguments arguments) =>
+			_subscription?.OnActionSheetRequested(page, arguments);
+
+		public void RequestAlert(Page page, AlertArguments arguments) =>
+			_subscription?.OnAlertRequested(page, arguments);
+
+		public void RequestPrompt(Page page, PromptArguments arguments) =>
+			_subscription?.OnPromptRequested(page, arguments);
+
+		public void RequestPageBusy(Page page, bool isBusy) =>
+			_subscription?.OnPageBusy(page, isBusy);
+
+		private partial IAlertManagerSubscription CreateSubscription(IMauiContext mauiContext);
+
+		internal interface IAlertManagerSubscription
 		{
-			foreach (var alertRequestHelper in GetSubscriptions())
-			{
-				Subscriptions.Remove(alertRequestHelper);
-			}
+			void OnActionSheetRequested(Page sender, ActionSheetArguments arguments);
+
+			void OnAlertRequested(Page sender, AlertArguments arguments);
+
+			void OnPromptRequested(Page sender, PromptArguments arguments);
+
+			void OnPageBusy(Page sender, bool enabled);
 		}
 
-		public void RequestActionSheet(Page page, ActionSheetArguments arguments)
-		{
-			foreach (var alertRequestHelper in GetSubscriptions())
-			{
-				alertRequestHelper.OnActionSheetRequested(page, arguments);
-			}
-		}
-
-		public void RequestAlert(Page page, AlertArguments arguments)
-		{
-			foreach (var alertRequestHelper in GetSubscriptions())
-			{
-				alertRequestHelper.OnAlertRequested(page, arguments);
-			}
-		}
-
-		public void RequestPrompt(Page page, PromptArguments arguments)
-		{
-			foreach (var alertRequestHelper in GetSubscriptions())
-			{
-				alertRequestHelper.OnPromptRequested(page, arguments);
-			}
-		}
-
-		public void RequestPageBusy(Page page, bool isBusy)
-		{
-			foreach (var alertRequestHelper in GetSubscriptions())
-			{
-				alertRequestHelper.OnPageBusy(page, isBusy);
-			}
-		}
-
-		private partial bool TryCreateSubscription(out AlertRequestHelper subscription);
-
-		private partial AlertRequestHelper[] GetSubscriptions();
-
-		internal partial class AlertRequestHelper
+		internal partial class AlertRequestHelper : IAlertManagerSubscription
 		{
 			public partial void OnActionSheetRequested(Page sender, ActionSheetArguments arguments);
 

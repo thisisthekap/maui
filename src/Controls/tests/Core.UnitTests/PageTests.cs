@@ -7,19 +7,8 @@ using Xunit;
 
 namespace Microsoft.Maui.Controls.Core.UnitTests
 {
-
 	public class PageTests : BaseTestFixture
 	{
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				MessagingCenter.ClearSubscribers();
-			}
-
-			base.Dispose(disposing);
-		}
-
 		[Fact]
 		public void TestConstructor()
 		{
@@ -311,119 +300,6 @@ namespace Microsoft.Maui.Controls.Core.UnitTests
 			}
 
 			Assert.True(thrown);
-		}
-
-		[Fact]
-		public void BusyNotSentWhenNotVisible()
-		{
-			var sent = false;
-			MessagingCenter.Subscribe<Page, bool>(this, Page.BusySetSignalName, (p, b) => sent = true);
-
-			new ContentPage { IsBusy = true };
-
-			Assert.False(sent);
-		}
-
-		[Fact]
-		public void BusySentWhenBusyPageAppears()
-		{
-			var sent = false;
-			MessagingCenter.Subscribe<Page, bool>(this, Page.BusySetSignalName, (p, b) =>
-			{
-				Assert.True(b);
-				sent = true;
-			});
-
-			var page = new ContentPage { IsBusy = true, IsPlatformEnabled = true };
-
-			Assert.False(sent);
-
-			_ = new TestWindow(page);
-
-			Assert.True(sent, "Busy message not sent when visible");
-		}
-
-		[Fact]
-		public void BusySentWhenBusyPageDisappears()
-		{
-			var page = new ContentPage { IsBusy = true };
-			_ = new TestWindow(page);
-			((IPageController)page).SendAppearing();
-
-			var sent = false;
-			MessagingCenter.Subscribe<Page, bool>(this, Page.BusySetSignalName, (p, b) =>
-			{
-				Assert.False(b);
-				sent = true;
-			});
-
-			((IPageController)page).SendDisappearing();
-
-			Assert.True(sent, "Busy message not sent when visible");
-		}
-
-		[Fact]
-		public void BusySentWhenVisiblePageSetToBusy()
-		{
-			var sent = false;
-			MessagingCenter.Subscribe<Page, bool>(this, Page.BusySetSignalName, (p, b) => sent = true);
-
-			var page = new ContentPage();
-			_ = new TestWindow(page);
-			((IPageController)page).SendAppearing();
-
-			Assert.False(sent, "Busy message sent appearing while not busy");
-
-			page.IsBusy = true;
-
-			Assert.True(sent, "Busy message not sent when visible");
-		}
-
-		[Fact]
-		public void DisplayAlert()
-		{
-			var page = new ContentPage() { IsPlatformEnabled = true };
-
-			AlertArguments args = null;
-			MessagingCenter.Subscribe(this, Page.AlertSignalName, (Page sender, AlertArguments e) => args = e);
-
-			var task = page.DisplayAlert("Title", "Message", "Accept", "Cancel");
-
-			Assert.Equal("Title", args.Title);
-			Assert.Equal("Message", args.Message);
-			Assert.Equal("Accept", args.Accept);
-			Assert.Equal("Cancel", args.Cancel);
-
-			bool completed = false;
-			var continueTask = task.ContinueWith(t => completed = true);
-
-			args.SetResult(true);
-			continueTask.Wait();
-			Assert.True(completed);
-		}
-
-		[Fact]
-		public void DisplayActionSheet()
-		{
-			var page = new ContentPage() { IsPlatformEnabled = true };
-
-			ActionSheetArguments args = null;
-			MessagingCenter.Subscribe(this, Page.ActionSheetSignalName, (Page sender, ActionSheetArguments e) => args = e);
-
-			var task = page.DisplayActionSheet("Title", "Cancel", "Destruction", "Other 1", "Other 2");
-
-			Assert.Equal("Title", args.Title);
-			Assert.Equal("Destruction", args.Destruction);
-			Assert.Equal("Cancel", args.Cancel);
-			Assert.Equal("Other 1", args.Buttons.First());
-			Assert.Equal("Other 2", args.Buttons.Skip(1).First());
-
-			bool completed = false;
-			var continueTask = task.ContinueWith(t => completed = true);
-
-			args.SetResult("Cancel");
-			continueTask.Wait();
-			Assert.True(completed);
 		}
 
 		class PageTestApp : Application { }

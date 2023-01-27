@@ -22,36 +22,12 @@ namespace Microsoft.Maui.Controls.Platform
 {
 	internal partial class AlertManager
 	{
-		private partial bool TryCreateSubscription([MaybeNullWhen(false)] out AlertRequestHelper subscription)
+		private partial IAlertManagerSubscription CreateSubscription(IMauiContext mauiContext)
 		{
-			IMauiContext mauiContext = Window?.MauiContext;
-			Context context = mauiContext?.Context;
+			Context context = mauiContext.Context;
 			Activity activity = context.GetActivity();
 
-			if (Subscriptions.Any(s => s.Activity == activity))
-			{
-				subscription = null;
-				return false;
-			}
-
-			subscription = new AlertRequestHelper(activity, mauiContext);
-			return true;
-		}
-
-		private partial AlertRequestHelper[] GetSubscriptions()
-		{
-			IMauiContext mauiContext = Window?.MauiContext;
-			Context context = mauiContext?.Context;
-			Activity activity = context.GetActivity();
-
-			var subs = Subscriptions.Where(s => s.Activity == activity);
-
-			return subs.ToArray();
-		}
-
-		internal void ResetBusyCount(Activity context)
-		{
-			Subscriptions.FirstOrDefault(s => s.Activity == context)?.ResetBusyCount();
+			return new AlertRequestHelper(activity, mauiContext);
 		}
 
 		internal sealed partial class AlertRequestHelper
@@ -66,11 +42,6 @@ namespace Microsoft.Maui.Controls.Platform
 
 			public Activity Activity { get; }
 			public IMauiContext MauiContext { get; }
-
-			public void ResetBusyCount()
-			{
-				_busyCount = 0;
-			}
 
 			public partial void OnPageBusy(Page sender, bool enabled)
 			{
