@@ -8,6 +8,8 @@ override Microsoft.Maui.FontSize.GetHashCode() -> int
 override Microsoft.Maui.Handlers.EditorHandler.PlatformArrange(Microsoft.Maui.Graphics.Rect frame) -> void
 override Microsoft.Maui.Layouts.FlexBasis.Equals(object? obj) -> bool
 override Microsoft.Maui.Layouts.FlexBasis.GetHashCode() -> int
+override Microsoft.Maui.Platform.LayoutViewGroup.DispatchTouchEvent(Android.Views.MotionEvent? e) -> bool
+override Microsoft.Maui.Platform.LayoutViewGroup.SetOnTouchListener(Android.Views.View.IOnTouchListener? l) -> void
 override Microsoft.Maui.SizeRequest.Equals(object? obj) -> bool
 override Microsoft.Maui.SizeRequest.GetHashCode() -> int
 static Microsoft.Maui.FontSize.operator !=(Microsoft.Maui.FontSize left, Microsoft.Maui.FontSize right) -> bool
@@ -26,3 +28,5 @@ static Microsoft.Maui.Platform.WebViewExtensions.UpdateUserAgent(this Android.We
 Microsoft.Maui.WeakEventManager.HandleEvent(object? sender, object? args, string! eventName) -> void
 static Microsoft.Maui.SizeRequest.operator !=(Microsoft.Maui.SizeRequest left, Microsoft.Maui.SizeRequest right) -> bool
 static Microsoft.Maui.SizeRequest.operator ==(Microsoft.Maui.SizeRequest left, Microsoft.Maui.SizeRequest right) -> bool
+~override Microsoft.Maui.Platform.WrapperView.OnTouchEvent(Android.Views.MotionEvent e) -> bool
+~override Microsoft.Maui.Platform.WrapperView.SetOnTouchListener(Android.Views.View.IOnTouchListener l) -> void

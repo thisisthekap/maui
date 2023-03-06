@@ -11,10 +11,14 @@ using Size = Microsoft.Maui.Graphics.Size;
 
 namespace Microsoft.Maui.Platform
 {
-	public class LayoutViewGroup : ViewGroup
+	public class LayoutViewGroup : ViewGroup, ITouchInterceptingView
 	{
 		readonly ARect _clipRect = new();
 		readonly Context _context;
+
+		WeakReference? _touchListener;
+
+		bool ITouchInterceptingView.TouchEventNotReallyHandled { get; set; }
 
 		public bool InputTransparent { get; set; }
 
@@ -107,17 +111,22 @@ namespace Microsoft.Maui.Platform
 			}
 		}
 
-		public override bool OnTouchEvent(MotionEvent? e)
-		{
-			if (InputTransparent)
-			{
-				return false;
-			}
+		public override bool OnTouchEvent(MotionEvent? e) =>
+			base.OnTouchEvent(e) || TouchEventInterceptor.OnTouchEvent(this, e);
 
-			return base.OnTouchEvent(e);
+		public override bool DispatchTouchEvent(MotionEvent? e) =>
+			TouchEventInterceptor.DispatchingTouchEvent(this, e) &&
+			base.DispatchTouchEvent(e) &&
+			TouchEventInterceptor.DispatchedTouchEvent(this, e, _touchListener?.Target as IOnTouchListener);
+
+		public override void SetOnTouchListener(IOnTouchListener? l)
+		{
+			_touchListener = l is null ? null : new(l);
+			base.SetOnTouchListener(l);
 		}
 
 		internal Func<double, double, Size>? CrossPlatformMeasure { get; set; }
+
 		internal Func<Rectangle, Size>? CrossPlatformArrange { get; set; }
 	}
 }

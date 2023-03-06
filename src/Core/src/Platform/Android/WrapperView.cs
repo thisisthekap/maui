@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using System;
 using Android.Content;
 using Android.Graphics;
 using Android.Views;
@@ -9,7 +10,7 @@ using AView = Android.Views.View;
 
 namespace Microsoft.Maui.Platform
 {
-	public partial class WrapperView : ViewGroup
+	public partial class WrapperView : ViewGroup, ITouchInterceptingView
 	{
 		const int MaximumRadius = 100;
 
@@ -25,6 +26,10 @@ namespace Microsoft.Maui.Platform
 		bool _invalidateShadow;
 
 		AView _borderView;
+
+		WeakReference _touchListener;
+
+		bool ITouchInterceptingView.TouchEventNotReallyHandled { get; set; }
 
 		public bool InputTransparent { get; set; }
 
@@ -112,14 +117,18 @@ namespace Microsoft.Maui.Platform
 			base.DispatchDraw(canvas);
 		}
 
-		public override bool DispatchTouchEvent(MotionEvent e)
-		{
-			if (InputTransparent)
-			{
-				return false;
-			}
+		public override bool OnTouchEvent(MotionEvent e) =>
+			base.OnTouchEvent(e) || TouchEventInterceptor.OnTouchEvent(this, e);
 
-			return base.DispatchTouchEvent(e);
+		public override bool DispatchTouchEvent(MotionEvent e) =>
+			TouchEventInterceptor.DispatchingTouchEvent(this, e) &&
+			base.DispatchTouchEvent(e) &&
+			TouchEventInterceptor.DispatchedTouchEvent(this, e, _touchListener?.Target as IOnTouchListener);
+
+		public override void SetOnTouchListener(IOnTouchListener l)
+		{
+			_touchListener = l is null ? null : new(l);
+			base.SetOnTouchListener(l);
 		}
 
 		partial void ClipChanged()

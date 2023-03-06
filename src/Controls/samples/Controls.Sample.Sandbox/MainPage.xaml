@@ -4,4 +4,106 @@
     x:Class="Maui.Controls.Sample.MainPage"
     xmlns:local="clr-namespace:Maui.Controls.Sample">
 
+    <StackLayout Background="White">
+
+        <Label x:Name="thisLabel" />
+
+        <CollectionView SelectionChanged="CollectionView_SelectionChanged"
+                        SelectionMode="Single"
+                        HeightRequest="200">
+            <CollectionView.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Wednesday</x:String>
+                    <x:String>Friday</x:String>
+                </x:Array>
+            </CollectionView.ItemsSource>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="20" Background="Orange">
+
+                        <Grid HeightRequest="50" >
+                            <Grid Margin="0,0,10,0">
+                                <Button Text="Clicker" Clicked="myButton_Click" />
+                            </Grid>
+                            <Grid Background="Red" Opacity="0.2" Margin="10,10,0,10"/>
+                        </Grid>
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ListView ItemSelected="ListView_ItemSelected"
+                  SelectionMode="Single"
+                  HeightRequest="200">
+            <ListView.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Wednesday</x:String>
+                    <x:String>Friday</x:String>
+                </x:Array>
+            </ListView.ItemsSource>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="20" Background="Orange">
+
+                            <Grid HeightRequest="50" >
+                                <Grid Margin="0,0,10,0">
+                                    <Button Text="Clicker" Clicked="myButton_Click" />
+                                </Grid>
+                                <Grid Background="Red" Opacity="0.2" Margin="10,10,0,10"/>
+                            </Grid>
+
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Grid Padding="20" Background="Pink" HeightRequest="100">
+
+            <Grid HeightRequest="50" >
+                <Grid Margin="0,0,10,0">
+                    <Button Text="Clicker" Clicked="myButton_Click" />
+                </Grid>
+                <Grid Background="Red" Opacity="0.2" Margin="10,10,0,10"/>
+            </Grid>
+
+        </Grid>
+
+        <Grid Padding="20" Background="Pink" HeightRequest="100">
+
+            <Grid HeightRequest="50" >
+                <Grid Margin="0,0,10,0">
+                    <Button Text="Clicker" Clicked="myButton_Click" />
+                </Grid>
+                <Grid Margin="10,10,0,10"/>
+            </Grid>
+
+        </Grid>
+
+        <Grid Padding="20" Background="Pink" HeightRequest="100">
+
+            <Grid HeightRequest="50" >
+                <Grid Margin="0,0,10,0">
+                    <Button Text="Clicker" Clicked="myButton_Click" />
+                </Grid>
+                <Image Source="dotnet_bot.png" Opacity="0.2" Margin="10,10,0,10" HorizontalOptions="Center"/>
+            </Grid>
+
+        </Grid>
+
+        <Grid Padding="20" Background="Pink" HeightRequest="100">
+
+            <Grid HeightRequest="50" >
+                <Grid Margin="0,0,10,0">
+                    <Button Text="Clicker" Clicked="myButton_Click" />
+                </Grid>
+                <Image Source="dotnet_bot.png" Opacity="0.2" Margin="10,10,0,10" Background="Cyan" HorizontalOptions="Center"/>
+            </Grid>
+
+        </Grid>
+
+    </StackLayout>
+
 </ContentPage>
