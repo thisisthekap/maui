@@ -14,6 +14,7 @@ namespace Microsoft.Maui.Controls
 		/// <summary>
 		/// The property mapper that maps the abstract properties to the platform-specific methods for further processing.
 		/// </summary>
+		[Obsolete("Use ButtonHandler.Mapper instead.")]
 		public static IPropertyMapper<IButton, ButtonHandler> ControlsButtonMapper = new PropertyMapper<Button, ButtonHandler>(ButtonHandler.Mapper)
 		{
 			[nameof(ContentLayout)] = MapContentLayout,
@@ -21,7 +22,6 @@ namespace Microsoft.Maui.Controls
 			[nameof(Padding)] = MapPadding,
 #endif
 #if WINDOWS
-			[nameof(IText.Text)] = MapText,
 			[nameof(ImageSource)] = MapImageSource,
 #endif
 			[nameof(TextTransform)] = MapText,
@@ -31,7 +31,17 @@ namespace Microsoft.Maui.Controls
 
 		internal new static void RemapForControls()
 		{
-			ButtonHandler.Mapper = ControlsButtonMapper;
+#if IOS
+			ButtonHandler.Mapper.ModifyMappingWhen<Button, IButtonHandler>(nameof(Padding), MapPadding);
+#endif
+#if WINDOWS
+			ButtonHandler.Mapper.ModifyMappingWhen<Button, IButtonHandler>(nameof(ImageSource), MapImageSource);
+#endif
+			ButtonHandler.Mapper.ModifyMappingWhen<Button, IButtonHandler>(nameof(Text), MapText);
+
+			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(ContentLayout), MapContentLayout);
+			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(TextTransform), MapText);
+			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(Button.LineBreakMode), MapText);
 		}
 
 		/// <summary>

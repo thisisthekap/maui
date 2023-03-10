@@ -302,7 +302,9 @@ namespace Microsoft.Maui.Controls
 			set => SetValue(CascadeInputTransparentProperty, value);
 		}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 		public static IPropertyMapper<IView, IViewHandler> ControlsLayoutMapper = new PropertyMapper<IView, IViewHandler>(ControlsVisualElementMapper)
+#pragma warning restore CS0618 // Type or member is obsolete
 		{
 			[nameof(CascadeInputTransparent)] = MapInputTransparent,
 			[nameof(IView.InputTransparent)] = MapInputTransparent,

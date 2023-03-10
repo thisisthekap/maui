@@ -7,6 +7,7 @@ namespace Microsoft.Maui.Controls
 	/// <include file="../../../../docs/Microsoft.Maui.Controls/VisualElement.xml" path="Type[@FullName='Microsoft.Maui.Controls.VisualElement']/Docs/*" />
 	public partial class VisualElement
 	{
+		[Obsolete("Use ViewHandler.ViewMapper instead.")]
 		public static IPropertyMapper<IView, IViewHandler> ControlsVisualElementMapper =
 			new PropertyMapper<IView, IViewHandler>(Element.ControlsElementMapper)
 			{
@@ -24,9 +25,20 @@ namespace Microsoft.Maui.Controls
 				[nameof(IViewHandler.ContainerView)] = MapContainerView,
 			};
 
-		internal static void RemapForControls()
+		internal static new void RemapForControls()
 		{
-			ViewHandler.ViewMapper = ControlsVisualElementMapper;
+#if WINDOWS
+			ViewHandler.ViewMapper.AppendToMapping(PlatformConfiguration.WindowsSpecific.VisualElement.AccessKeyHorizontalOffsetProperty.PropertyName, MapAccessKeyHorizontalOffset);
+			ViewHandler.ViewMapper.AppendToMapping(PlatformConfiguration.WindowsSpecific.VisualElement.AccessKeyPlacementProperty.PropertyName, MapAccessKeyPlacement);
+			ViewHandler.ViewMapper.AppendToMapping(PlatformConfiguration.WindowsSpecific.VisualElement.AccessKeyProperty.PropertyName, MapAccessKey);
+			ViewHandler.ViewMapper.AppendToMapping(PlatformConfiguration.WindowsSpecific.VisualElement.AccessKeyVerticalOffsetProperty.PropertyName, MapAccessKeyVerticalOffset);
+#endif
+			ViewHandler.ViewMapper.AppendToMapping(nameof(BackgroundColor), MapBackgroundColor);
+			ViewHandler.ViewMapper.AppendToMapping(nameof(Page.BackgroundImageSource), MapBackgroundImageSource);
+			ViewHandler.ViewMapper.AppendToMapping(SemanticProperties.DescriptionProperty.PropertyName, MapSemanticPropertiesDescriptionProperty);
+			ViewHandler.ViewMapper.AppendToMapping(SemanticProperties.HintProperty.PropertyName, MapSemanticPropertiesHintProperty);
+			ViewHandler.ViewMapper.AppendToMapping(SemanticProperties.HeadingLevelProperty.PropertyName, MapSemanticPropertiesHeadingLevelProperty);
+			ViewHandler.ViewMapper.AppendToMapping(nameof(IViewHandler.ContainerView), MapContainerView);
 		}
 
 		public static void MapBackgroundColor(IViewHandler handler, IView view)
@@ -56,8 +68,6 @@ namespace Microsoft.Maui.Controls
 
 		static void MapContainerView(IViewHandler arg1, IView arg2)
 		{
-			Element.ControlsElementMapper.UpdateProperty(arg1, arg2, nameof(IViewHandler.ContainerView));
-
 			if (arg2 is VisualElement ve)
 			{
 				ve._platformContainerViewChanged?.Invoke(arg2, EventArgs.Empty);
