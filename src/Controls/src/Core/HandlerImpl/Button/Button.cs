@@ -31,6 +31,7 @@ namespace Microsoft.Maui.Controls
 
 		internal new static void RemapForControls()
 		{
+			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(ContentLayout), MapContentLayout);
 #if IOS
 			ButtonHandler.Mapper.ModifyMappingWhen<Button, IButtonHandler>(nameof(Padding), MapPadding);
 #endif
@@ -39,9 +40,8 @@ namespace Microsoft.Maui.Controls
 #endif
 			ButtonHandler.Mapper.ModifyMappingWhen<Button, IButtonHandler>(nameof(Text), MapText);
 
-			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(ContentLayout), MapContentLayout);
 			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(TextTransform), MapText);
-			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(Button.LineBreakMode), MapText);
+			ButtonHandler.Mapper.AppendToMappingWhen<Button, IButtonHandler>(nameof(Button.LineBreakMode), MapLineBreakMode);
 		}
 
 		/// <summary>
