@@ -32,7 +32,7 @@ namespace Microsoft.Maui.Platform
 		/// <summary>
 		/// This method should be called by any view that will "intercept" the touches.
 		/// </summary>
-		/// <param name="view">The view that is recieving the touch event.</param>
+		/// <param name="view">The view that is receiving the touch event.</param>
 		/// <param name="e">The touch event.</param>
 		/// <returns>Returns true if the touch was "handled", false if the view does not want to do anything.</returns>
 		public static bool OnTouchEvent(View? view, MotionEvent? e)
