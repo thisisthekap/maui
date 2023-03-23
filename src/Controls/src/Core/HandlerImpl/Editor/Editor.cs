@@ -17,10 +17,10 @@ namespace Microsoft.Maui.Controls
 		{
 			// Adjust the mappings to preserve Controls.Editor legacy behaviors
 #if WINDOWS
-			EntryHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
+			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
 #endif
-			EntryHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(Text), MapText);
-			EntryHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(TextTransform), MapText);
+			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(Text), MapText);
+			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(TextTransform), MapText);
 		}
 	}
 }

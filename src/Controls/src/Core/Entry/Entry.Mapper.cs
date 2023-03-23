@@ -20,6 +20,7 @@ namespace Microsoft.Maui.Controls
 
 		internal static new void RemapForControls()
 		{
+			// Adjust the mappings to preserve Controls.Entry legacy behaviors
 #if ANDROID
 			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(PlatformConfiguration.AndroidSpecific.Entry.ImeOptionsProperty.PropertyName, MapImeOptions);
 #elif WINDOWS

@@ -13,7 +13,9 @@ namespace Microsoft.Maui.Controls
 		internal static new void RemapForControls()
 		{
 			// Adjust the mappings to preserve Controls.DatePicker legacy behaviors
-			DatePickerHandler.Mapper = ControlsDatePickerMapper;
+#if IOS
+			DatePickerHandler.Mapper.ModifyMappingWhen<DatePicker, IDatePickerHandler>(PlatformConfiguration.iOSSpecific.DatePicker.UpdateModeProperty.PropertyName, MapUpdateMode);
+#endif
 		}
 	}
 }
