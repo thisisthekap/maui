@@ -16,7 +16,11 @@ namespace Microsoft.Maui.Controls
 		internal static new void RemapForControls()
 		{
 			// Adjust the mappings to preserve Controls.Editor legacy behaviors
-			EditorHandler.Mapper = ControlsEditorMapper;
+#if WINDOWS
+			EntryHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
+#endif
+			EntryHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(Text), MapText);
+			EntryHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(TextTransform), MapText);
 		}
 	}
 }

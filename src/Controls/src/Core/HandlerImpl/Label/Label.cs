@@ -35,7 +35,25 @@ namespace Microsoft.Maui.Controls
 			// ILabel does not include the TextType property, so we map it here to handle HTML text
 			// And we map some of the other property handlers to Controls-specific versions that avoid stepping on HTML text settings
 
-			LabelHandler.Mapper = ControlsLabelMapper;
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextType), MapTextType);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(Text), MapText);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(FormattedText), MapText);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextTransform), MapText);
+#if WINDOWS
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
+#endif
+#if ANDROID
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
+#endif
+#if IOS
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextDecorations), MapTextDecorations);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(CharacterSpacing), MapCharacterSpacing);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(LineHeight), MapLineHeight);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(ILabel.Font), MapFont);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
+#endif
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(Label.LineBreakMode), MapLineBreakMode);
+			EntryHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(Label.MaxLines), MapMaxLines);
 		}
 	}
 }
