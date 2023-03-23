@@ -37,14 +37,14 @@ namespace Microsoft.Maui.Controls
 		{
 #if ANDROID || WINDOWS || TIZEN
 			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(IToolbar.IsVisible), MapIsVisible);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(IToolbar.BackButtonVisible), MapBackButtonVisible);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.TitleIcon), MapTitleIcon);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.TitleView), MapTitleView);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.IconColor), MapIconColor);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.ToolbarItems), MapToolbarItems);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.BackButtonTitle), MapBackButtonTitle);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.BarBackground), MapBarBackground);
-			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.BarTextColor), MapBarTextColor);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(IToolbar.BackButtonVisible), MapBackButtonVisible);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.TitleIcon), MapTitleIcon);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.TitleView), MapTitleView);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.IconColor), MapIconColor);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.ToolbarItems), MapToolbarItems);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BackButtonTitle), MapBackButtonTitle);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BarBackground), MapBarBackground);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BarTextColor), MapBarTextColor);
 #endif
 #if WINDOWS
 			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BackButtonEnabled), MapBackButtonEnabled);
