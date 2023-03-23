@@ -5,12 +5,17 @@ namespace Microsoft.Maui.Controls
 	{
 		public static IPropertyMapper<IFlyoutView, FlyoutViewHandler> ControlsFlyoutPageMapper = new PropertyMapper<IFlyoutView, FlyoutViewHandler>(FlyoutViewHandler.Mapper)
 		{
-			[nameof(FlyoutLayoutBehavior)] = (handler, __) => handler.UpdateValue(nameof(IFlyoutView.FlyoutBehavior)),
+			[nameof(FlyoutLayoutBehavior)] = MapFlyoutLayoutBehavior,
 		};
 
 		internal new static void RemapForControls()
 		{
-			FlyoutViewHandler.Mapper = ControlsFlyoutPageMapper;
+			FlyoutViewHandler.Mapper.ModifyMappingWhen<IFlyoutView, IFlyoutViewHandler>(nameof(FlyoutLayoutBehavior), MapFlyoutLayoutBehavior);
+		}
+
+		internal static void MapFlyoutLayoutBehavior(IFlyoutViewHandler handler, IFlyoutView view)
+		{
+			handler.UpdateValue(nameof(IFlyoutView.FlyoutBehavior));
 		}
 	}
 }

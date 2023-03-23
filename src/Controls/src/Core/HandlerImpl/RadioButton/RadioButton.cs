@@ -9,16 +9,14 @@ namespace Microsoft.Maui.Controls
 		IMauiContext MauiContext => Handler?.MauiContext ?? throw new InvalidOperationException("MauiContext not set");
 
 		public static IPropertyMapper<RadioButton, RadioButtonHandler> ControlsRadioButtonMapper =
-			   new PropertyMapper<RadioButton, RadioButtonHandler>(RadioButtonHandler.Mapper)
-			   {
-#if IOS || ANDROID || WINDOWS || TIZEN
-				   [nameof(IRadioButton.Content)] = MapContent
-#endif
-			   };
+			new PropertyMapper<RadioButton, RadioButtonHandler>(RadioButtonHandler.Mapper)
+			{
+				[nameof(IRadioButton.Content)] = MapContent
+			};
 
 		internal new static void RemapForControls()
 		{
-			RadioButtonHandler.Mapper = ControlsRadioButtonMapper;
+			RadioButtonHandler.Mapper.ModifyMappingWhen<RadioButton, IRadioButtonHandler>(nameof(IRadioButton.Content), MapContent);
 
 #if ANDROID
 			RadioButtonHandler.PlatformViewFactory = CreatePlatformView;
