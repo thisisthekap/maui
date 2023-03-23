@@ -14,7 +14,9 @@ namespace Microsoft.Maui.Controls
 		internal static new void RemapForControls()
 		{
 			// Adjust the mappings to preserve Controls.ScrollView legacy behaviors
-			ScrollViewHandler.Mapper = ControlsScrollViewMapper;
+#if IOS
+			ScrollViewHandler.Mapper.ModifyMappingWhen<ScrollView, IScrollViewHandler>(PlatformConfiguration.iOSSpecific.ScrollView.ShouldDelayContentTouchesProperty.PropertyName, MapShouldDelayContentTouches);
+#endif
 		}
 	}
 }

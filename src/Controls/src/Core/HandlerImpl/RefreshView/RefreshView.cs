@@ -13,7 +13,9 @@ namespace Microsoft.Maui.Controls
 		internal static new void RemapForControls()
 		{
 			// Adjust the mappings to preserve Controls.RefreshView legacy behaviors
-			RefreshViewHandler.Mapper = ControlsRefreshViewMapper;
+#if WINDOWS
+			RefreshViewHandler.Mapper.ModifyMappingWhen<RefreshView, IRefreshViewHandler>(PlatformConfiguration.WindowsSpecific.RefreshView.RefreshPullDirectionProperty.PropertyName, MapRefreshPullDirection);
+#endif
 		}
 	}
 }

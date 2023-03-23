@@ -17,7 +17,7 @@ namespace Microsoft.Maui.Controls.Shapes
 
 		internal new static void RemapForControls()
 		{
-			ShapeViewHandler.Mapper = ControlsShapeViewMapper;
+			ShapeViewHandler.Mapper.ModifyMappingWhen<IShapeView, IShapeViewHandler>(nameof(StrokeDashArray), MapStrokeDashArray);
 		}
 	}
 }
