@@ -13,29 +13,44 @@ namespace Microsoft.Maui.Controls
 		IMauiContext MauiContext => Handler?.MauiContext ?? throw new InvalidOperationException("MauiContext not set");
 
 		public static IPropertyMapper<Toolbar, ToolbarHandler> ControlsToolbarMapper =
-			   new PropertyMapper<Toolbar, ToolbarHandler>(ToolbarHandler.Mapper)
-			   {
+			new PropertyMapper<Toolbar, ToolbarHandler>(ToolbarHandler.Mapper)
+			{
 #if ANDROID || WINDOWS || TIZEN
-				   [nameof(IToolbar.IsVisible)] = MapIsVisible,
-				   [nameof(IToolbar.BackButtonVisible)] = MapBackButtonVisible,
-				   [nameof(Toolbar.TitleIcon)] = MapTitleIcon,
-				   [nameof(Toolbar.TitleView)] = MapTitleView,
-				   [nameof(Toolbar.IconColor)] = MapIconColor,
-				   [nameof(Toolbar.ToolbarItems)] = MapToolbarItems,
-				   [nameof(Toolbar.BackButtonTitle)] = MapBackButtonTitle,
-				   [nameof(Toolbar.BarBackground)] = MapBarBackground,
-				   [nameof(Toolbar.BarTextColor)] = MapBarTextColor,
+				[nameof(IToolbar.IsVisible)] = MapIsVisible,
+				[nameof(IToolbar.BackButtonVisible)] = MapBackButtonVisible,
+				[nameof(Toolbar.TitleIcon)] = MapTitleIcon,
+				[nameof(Toolbar.TitleView)] = MapTitleView,
+				[nameof(Toolbar.IconColor)] = MapIconColor,
+				[nameof(Toolbar.ToolbarItems)] = MapToolbarItems,
+				[nameof(Toolbar.BackButtonTitle)] = MapBackButtonTitle,
+				[nameof(Toolbar.BarBackground)] = MapBarBackground,
+				[nameof(Toolbar.BarTextColor)] = MapBarTextColor,
 #endif
 #if WINDOWS
-				   [nameof(Toolbar.BackButtonEnabled)] = MapBackButtonEnabled,
-				   [PlatformConfiguration.WindowsSpecific.Page.ToolbarPlacementProperty.PropertyName] = MapToolbarPlacement,
-				   [PlatformConfiguration.WindowsSpecific.Page.ToolbarDynamicOverflowEnabledProperty.PropertyName] = MapToolbarDynamicOverflowEnabled,
+				[nameof(Toolbar.BackButtonEnabled)] = MapBackButtonEnabled,
+				[PlatformConfiguration.WindowsSpecific.Page.ToolbarPlacementProperty.PropertyName] = MapToolbarPlacement,
+				[PlatformConfiguration.WindowsSpecific.Page.ToolbarDynamicOverflowEnabledProperty.PropertyName] = MapToolbarDynamicOverflowEnabled,
 #endif
-			   };
+			};
 
 		internal static void RemapForControls()
 		{
-			ToolbarHandler.Mapper = ControlsToolbarMapper;
+#if ANDROID || WINDOWS || TIZEN
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(IToolbar.IsVisible), MapIsVisible);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(IToolbar.BackButtonVisible), MapBackButtonVisible);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.TitleIcon), MapTitleIcon);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.TitleView), MapTitleView);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.IconColor), MapIconColor);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.ToolbarItems), MapToolbarItems);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.BackButtonTitle), MapBackButtonTitle);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.BarBackground), MapBarBackground);
+			ToolbarHandler.Mapper.ModifyMappingWhen<IWindow, IWindowHandler>(nameof(Toolbar.BarTextColor), MapBarTextColor);
+#endif
+#if WINDOWS
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BackButtonEnabled), MapBackButtonEnabled);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(PlatformConfiguration.WindowsSpecific.Page.ToolbarPlacementProperty.PropertyName, MapToolbarPlacement);
+			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(PlatformConfiguration.WindowsSpecific.Page.ToolbarDynamicOverflowEnabledProperty.PropertyName, MapToolbarDynamicOverflowEnabled);
+#endif
 		}
 	}
 }

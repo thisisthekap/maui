@@ -25,7 +25,18 @@ namespace Microsoft.Maui.Controls
 
 		internal new static void RemapForControls()
 		{
-			TabbedViewHandler.Mapper = ControlsTabbedPageMapper;
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(BarBackground), MapBarBackground);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(BarBackgroundColor), MapBarBackgroundColor);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(BarTextColor), MapBarTextColor);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(UnselectedTabColor), MapUnselectedTabColor);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(SelectedTabColor), MapSelectedTabColor);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(MultiPage<TabbedPage>.ItemsSource), MapItemsSource);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(MultiPage<TabbedPage>.ItemTemplate), MapItemTemplate);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(MultiPage<TabbedPage>.SelectedItem), MapSelectedItem);
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(nameof(CurrentPage), MapCurrentPage);
+#if ANDROID
+			TabbedViewHandler.Mapper.ModifyMappingWhen<TabbedPage, ITabbedViewHandler>(PlatformConfiguration.AndroidSpecific.TabbedPage.IsSwipePagingEnabledProperty.PropertyName, MapIsSwipePagingEnabled);
+#endif
 
 #if WINDOWS || ANDROID || TIZEN
 			TabbedViewHandler.PlatformViewFactory = OnCreatePlatformView;

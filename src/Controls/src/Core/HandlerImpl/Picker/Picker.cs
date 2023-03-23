@@ -11,13 +11,24 @@ namespace Microsoft.Maui.Controls
 			[nameof(Picker.HorizontalOptions)] = MapHorizontalOptions,
 			[nameof(Picker.VerticalOptions)] = MapVerticalOptions,
 #endif
-			[nameof(Picker.ItemsSource)] = (handler, _) => handler.UpdateValue(nameof(IPicker.Items))
+			[nameof(Picker.ItemsSource)] = MapItemsSource
 		};
 
 		internal static new void RemapForControls()
 		{
 			// Adjust the mappings to preserve Controls.Picker legacy behaviors
-			PickerHandler.Mapper = ControlsPickerMapper;
+#if IOS
+			PickerHandler.Mapper.ModifyMappingWhen<Picker, IPickerHandler>(PlatformConfiguration.iOSSpecific.Picker.UpdateModeProperty.PropertyName, MapUpdateMode);
+#elif WINDOWS
+			PickerHandler.Mapper.ModifyMappingWhen<Picker, IPickerHandler>(nameof(Picker.HorizontalOptions), MapHorizontalOptions);
+			PickerHandler.Mapper.ModifyMappingWhen<Picker, IPickerHandler>(nameof(Picker.VerticalOptions), MapVerticalOptions);
+#endif
+			PickerHandler.Mapper.ModifyMappingWhen<Picker, IPickerHandler>(nameof(Picker.ItemsSource), MapItemsSource);
+		}
+
+		internal static void MapItemsSource(IPickerHandler handler, IPicker view)
+		{
+			handler.UpdateValue(nameof(IPicker.Items));
 		}
 	}
 }

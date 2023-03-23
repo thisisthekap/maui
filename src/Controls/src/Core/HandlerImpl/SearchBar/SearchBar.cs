@@ -18,7 +18,13 @@ namespace Microsoft.Maui.Controls
 		internal static new void RemapForControls()
 		{
 			// Adjust the mappings to preserve Controls.SearchBar legacy behaviors
-			SearchBarHandler.Mapper = ControlsSearchBarMapper;
+#if WINDOWS
+			SearchBarHandler.Mapper.ModifyMappingWhen<SearchBar, ISearchBarHandler>(PlatformConfiguration.WindowsSpecific.SearchBar.IsSpellCheckEnabledProperty.PropertyName, MapIsSpellCheckEnabled);
+#elif IOS
+			SearchBarHandler.Mapper.ModifyMappingWhen<SearchBar, ISearchBarHandler>(PlatformConfiguration.iOSSpecific.SearchBar.SearchBarStyleProperty.PropertyName, MapSearchBarStyle);
+#endif
+			SearchBarHandler.Mapper.ModifyMappingWhen<SearchBar, ISearchBarHandler>(nameof(Text), MapText);
+			SearchBarHandler.Mapper.ModifyMappingWhen<SearchBar, ISearchBarHandler>(nameof(TextTransform), MapText);
 		}
 	}
 }

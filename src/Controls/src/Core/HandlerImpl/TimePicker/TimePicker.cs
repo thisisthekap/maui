@@ -13,7 +13,9 @@ namespace Microsoft.Maui.Controls
 		internal static new void RemapForControls()
 		{
 			// Adjust the mappings to preserve Controls.TimePicker legacy behaviors
-			TimePickerHandler.Mapper = ControlsTimePickerMapper;
+#if IOS
+			TimePickerHandler.Mapper.ModifyMappingWhen<TimePicker, ITimePickerHandler>(PlatformConfiguration.iOSSpecific.TimePicker.UpdateModeProperty.PropertyName, MapUpdateMode);
+#endif
 		}
 	}
 }
