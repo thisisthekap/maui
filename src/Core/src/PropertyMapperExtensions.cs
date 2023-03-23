@@ -42,10 +42,10 @@ namespace Microsoft.Maui
 
 			void newMethod(IElementHandler handler, IElement view)
 			{
-				if (handler is TViewHandler h && view is TVirtualView v)
-					method(h, v);
+				if ((handler is null || handler is TViewHandler) && view is TVirtualView v)
+					method((TViewHandler)handler!, v);
 				else
-					previousMethod?.Invoke(handler, view);
+					previousMethod?.Invoke(handler!, view);
 			}
 
 			propertyMapper.Add(key, newMethod);
@@ -86,8 +86,8 @@ namespace Microsoft.Maui
 			{
 				action?.Invoke(handler, view);
 
-				if (handler is TViewHandler h && view is TVirtualView v)
-					method(h, v);
+				if ((handler is null || handler is TViewHandler) && view is TVirtualView v)
+					method((TViewHandler)handler!, v);
 			});
 		}
 
@@ -118,16 +118,16 @@ namespace Microsoft.Maui
 		/// <param name="propertyMapper">The property mapper in which to change the mapping.</param>
 		/// <param name="key">The name of the property.</param>
 		/// <param name="method">The method to call before the existing mapping begins.</param>
-		internal static void PrependToMappingWhen<TVirtualView, TViewHandler>(this IPropertyMapper<TVirtualView, TViewHandler> propertyMapper,
+		internal static void PrependToMappingWhen<TVirtualView, TViewHandler>(this IPropertyMapper<IElement, IElementHandler> propertyMapper,
 			string key, Action<TViewHandler, TVirtualView> method)
 			where TVirtualView : IElement where TViewHandler : IElementHandler
 		{
 			propertyMapper.ModifyMapping(key, (handler, view, action) =>
 			{
-				if (handler is TViewHandler h && view is TVirtualView v)
-					method(h, v);
+				if ((handler is null || handler is TViewHandler) && view is TVirtualView v)
+					method((TViewHandler)handler!, v);
 
-				action?.Invoke(handler, view);
+				action?.Invoke(handler!, view);
 			});
 		}
 	}
