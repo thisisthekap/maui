@@ -20,8 +20,16 @@ namespace Microsoft.Maui.Controls
 
 		internal static new void RemapForControls()
 		{
-			// Adjust the mappings to preserve Controls.Entry legacy behaviors
-			EntryHandler.Mapper = ControlsEntryMapper;
+#if ANDROID
+			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(PlatformConfiguration.AndroidSpecific.Entry.ImeOptionsProperty.PropertyName, MapImeOptions);
+#elif WINDOWS
+			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
+#elif IOS
+			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(PlatformConfiguration.iOSSpecific.Entry.CursorColorProperty.PropertyName, MapCursorColor);
+			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(PlatformConfiguration.iOSSpecific.Entry.AdjustsFontSizeToFitWidthProperty.PropertyName, MapAdjustsFontSizeToFitWidth);
+#endif
+			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(nameof(Text), MapText);
+			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(nameof(TextTransform), MapText);
 		}
 	}
 }

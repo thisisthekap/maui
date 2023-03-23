@@ -15,8 +15,11 @@ namespace Microsoft.Maui.Controls
 
 		internal static new void RemapForControls()
 		{
-			// Adjust the mappings to preserve Controls.Application legacy behaviors
-			ApplicationHandler.Mapper = ControlsApplicationMapper;
+#if ANDROID
+			// There is also a mapper on Window for this property since this property is relevant at the window level for
+			// Android not the application level
+			ApplicationHandler.Mapper.ModifyMappingWhen<Application, ApplicationHandler>(PlatformConfiguration.AndroidSpecific.Application.WindowSoftInputModeAdjustProperty.PropertyName, MapWindowSoftInputModeAdjust);
+#endif
 		}
 	}
 }
