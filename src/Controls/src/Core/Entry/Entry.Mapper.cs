@@ -1,8 +1,11 @@
 ﻿#nullable disable
+using System;
+
 namespace Microsoft.Maui.Controls
 {
 	public partial class Entry
 	{
+		[Obsolete("Use EntryHandler.Mapper instead.")]
 		public static IPropertyMapper<IEntry, EntryHandler> ControlsEntryMapper =
 			new PropertyMapper<Entry, EntryHandler>(EntryHandler.Mapper)
 			{

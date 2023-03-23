@@ -1,8 +1,11 @@
 ﻿#nullable disable
+using System;
+
 namespace Microsoft.Maui.Controls
 {
 	public partial class DatePicker
 	{
+		[Obsolete("Use DatePickerHandler.Mapper instead.")]
 		public static IPropertyMapper<IDatePicker, DatePickerHandler> ControlsDatePickerMapper = new PropertyMapper<DatePicker, DatePickerHandler>(DatePickerHandler.Mapper)
 		{
 #if IOS

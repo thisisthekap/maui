@@ -1,4 +1,5 @@
 #nullable disable
+using System;
 using Microsoft.Maui.Handlers;
 
 namespace Microsoft.Maui.Controls
@@ -6,6 +7,7 @@ namespace Microsoft.Maui.Controls
 	/// <include file="../../../../docs/Microsoft.Maui.Controls/Label.xml" path="Type[@FullName='Microsoft.Maui.Controls.Label']/Docs/*" />
 	public partial class Label
 	{
+		[Obsolete("Use LabelHandler.Mapper instead.")]
 		public static IPropertyMapper<ILabel, LabelHandler> ControlsLabelMapper = new PropertyMapper<Label, LabelHandler>(LabelHandler.Mapper)
 		{
 			[nameof(TextType)] = MapTextType,

@@ -7,6 +7,7 @@ namespace Microsoft.Maui.Controls
 {
 	public partial class TabbedPage
 	{
+		[Obsolete("Use TabbedViewHandler.Mapper instead.")]
 		public static IPropertyMapper<ITabbedView, ITabbedViewHandler> ControlsTabbedPageMapper = new PropertyMapper<TabbedPage, ITabbedViewHandler>(TabbedViewHandler.Mapper)
 		{
 			[nameof(BarBackground)] = MapBarBackground,

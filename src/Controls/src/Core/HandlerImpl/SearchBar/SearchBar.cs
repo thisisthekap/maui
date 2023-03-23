@@ -1,8 +1,11 @@
 ﻿#nullable disable
+using System;
+
 namespace Microsoft.Maui.Controls
 {
 	public partial class SearchBar
 	{
+		[Obsolete("Use SearchBarHandler.Mapper instead.")]
 		public static IPropertyMapper<ISearchBar, SearchBarHandler> ControlsSearchBarMapper =
 			new PropertyMapper<SearchBar, SearchBarHandler>(SearchBarHandler.Mapper)
 			{

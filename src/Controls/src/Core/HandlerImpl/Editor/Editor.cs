@@ -1,8 +1,11 @@
 ﻿#nullable disable
+using System;
+
 namespace Microsoft.Maui.Controls
 {
 	public partial class Editor
 	{
+		[Obsolete("Use EditorHandler.Mapper instead.")]
 		public static IPropertyMapper<IEditor, EditorHandler> ControlsEditorMapper =
 			new PropertyMapper<Editor, EditorHandler>(EditorHandler.Mapper)
 			{

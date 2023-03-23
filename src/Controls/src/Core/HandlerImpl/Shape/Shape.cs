@@ -10,6 +10,7 @@ namespace Microsoft.Maui.Controls.Shapes
 {
 	public partial class Shape
 	{
+		[Obsolete("Use ShapeViewHandler.Mapper instead.")]
 		public static IPropertyMapper<IShapeView, IShapeViewHandler> ControlsShapeViewMapper = new PropertyMapper<IShapeView, IShapeViewHandler>(ShapeViewHandler.Mapper)
 		{
 			[nameof(StrokeDashArray)] = MapStrokeDashArray,

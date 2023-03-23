@@ -1,8 +1,11 @@
 ﻿#nullable disable
+using System;
+
 namespace Microsoft.Maui.Controls
 {
 	public partial class Picker
 	{
+		[Obsolete("Use PickerHandler.Mapper instead.")]
 		public static IPropertyMapper<IPicker, PickerHandler> ControlsPickerMapper = new PropertyMapper<Picker, PickerHandler>(PickerHandler.Mapper)
 		{
 #if IOS

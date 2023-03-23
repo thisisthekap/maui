@@ -1,8 +1,11 @@
 ﻿#nullable disable
+using System;
+
 namespace Microsoft.Maui.Controls
 {
 	public partial class Application
 	{
+		[Obsolete("Use ApplicationHandler.Mapper instead.")]
 		public static IPropertyMapper<IApplication, ApplicationHandler> ControlsApplicationMapper =
 			new PropertyMapper<Application, ApplicationHandler>(ApplicationHandler.Mapper)
 			{

@@ -1,8 +1,11 @@
+using System;
+
 namespace Microsoft.Maui.Controls
 {
 	/// <include file="../../../../docs/Microsoft.Maui.Controls/FlyoutPage.xml" path="Type[@FullName='Microsoft.Maui.Controls.FlyoutPage']/Docs/*" />
 	public partial class FlyoutPage
 	{
+		[Obsolete("Use FlyoutViewHandler.Mapper instead.")]
 		public static IPropertyMapper<IFlyoutView, FlyoutViewHandler> ControlsFlyoutPageMapper = new PropertyMapper<IFlyoutView, FlyoutViewHandler>(FlyoutViewHandler.Mapper)
 		{
 			[nameof(FlyoutLayoutBehavior)] = MapFlyoutLayoutBehavior,
