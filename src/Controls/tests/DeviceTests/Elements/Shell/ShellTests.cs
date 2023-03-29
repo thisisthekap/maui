@@ -8,6 +8,7 @@ using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Handlers;
 using Microsoft.Maui.Controls.Handlers.Compatibility;
+using Microsoft.Maui.Devices;
 using Microsoft.Maui.DeviceTests.Stubs;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Hosting;
@@ -32,7 +33,42 @@ namespace Microsoft.Maui.DeviceTests
 				{
 					SetupShellHandlers(handlers);
 					handlers.AddHandler(typeof(NavigationPage), typeof(NavigationViewHandler));
+					handlers.AddHandler(typeof(Button), typeof(ButtonHandler));
 				});
+			});
+		}
+
+		[Fact]
+		public async Task PageLayoutDoesNotExceedWindowBounds()
+		{
+			SetupBuilder();
+
+			var button = new Button()
+			{
+				Text = "Test me"
+			};
+
+			var contentPage = new ContentPage()
+			{
+				Content = button
+			};
+
+			var shell = new Shell()
+			{
+				CurrentItem = contentPage,
+				FlyoutBehavior = FlyoutBehavior.Disabled
+			};
+
+			await CreateHandlerAndAddToWindow<WindowHandlerStub>(shell, async (handler) =>
+			{
+				await OnFrameSetToNotEmpty(contentPage);
+				var pageBounds = contentPage.GetBoundingBox();
+				var window = contentPage.Window;
+
+				Assert.True(pageBounds.X >= 0);
+				Assert.True(pageBounds.Y >= 0);
+				Assert.True(pageBounds.Width <= window.Width);
+				Assert.True(pageBounds.Height <= window.Height);
 			});
 		}
 
@@ -660,7 +696,7 @@ namespace Microsoft.Maui.DeviceTests
 			});
 		}
 
-#if !IOS
+#if !IOS && !MACCATALYST
 		[Fact]
 		public async Task ChangingToNewMauiContextDoesntCrash()
 		{
@@ -916,6 +952,62 @@ namespace Microsoft.Maui.DeviceTests
 			});
 		}
 #endif
+
+		[Fact(DisplayName = "Pages Do Not Leak")]
+		public async Task PagesDoNotLeak()
+		{
+			SetupBuilder();
+			var shell = await CreateShellAsync(shell =>
+			{
+				shell.CurrentItem = new ContentPage() { Title = "Page 1" };
+			});
+
+			WeakReference pageReference = null;
+
+			await CreateHandlerAndAddToWindow<ShellHandler>(shell, async (handler) =>
+			{
+				await OnLoadedAsync(shell.CurrentPage);
+
+				var page = new ContentPage { Title = "Page 2" };
+				pageReference = new WeakReference(page);
+
+				await shell.Navigation.PushAsync(page);
+				await shell.Navigation.PopAsync();
+			});
+
+			// 3 GCs were required in Android API 23, 2 worked otherwise
+			for (int i = 0; i < 3; i++)
+			{
+				await Task.Yield();
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+			}
+
+			Assert.NotNull(pageReference);
+			Assert.False(pageReference.IsAlive, "Page should not be alive!");
+		}
+
+		[Fact(DisplayName = "Can Reuse Pages")]
+		public async Task CanReusePages()
+		{
+			SetupBuilder();
+			var rootPage = new ContentPage();
+			var shell = await CreateShellAsync(shell =>
+			{
+				shell.CurrentItem = rootPage;
+			});
+			var reusedPage = new ContentPage
+			{
+				Content = new Label { Text = "HEY" }
+			};
+			await CreateHandlerAndAddToWindow<IWindowHandler>(shell, async (handler) =>
+			{
+				await shell.Navigation.PushAsync(reusedPage);
+				await shell.Navigation.PopAsync();
+				await shell.Navigation.PushAsync(reusedPage);
+				await OnLoadedAsync(reusedPage.Content);
+			});
+		}
 
 		protected Task<Shell> CreateShellAsync(Action<Shell> action) =>
 			InvokeOnMainThreadAsync(() =>
