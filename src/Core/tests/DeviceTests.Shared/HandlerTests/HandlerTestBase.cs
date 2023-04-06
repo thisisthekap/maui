@@ -145,7 +145,6 @@ namespace Microsoft.Maui.DeviceTests
 			return handler;
 		}
 
-#if PLATFORM
 		protected IPlatformViewHandler CreateHandler(IElement view, Type handlerType)
 		{
 			if (view.Handler is IPlatformViewHandler t)
@@ -193,8 +192,6 @@ namespace Microsoft.Maui.DeviceTests
 			throw new NotImplementedException();
 #endif
 		}
-
-#endif
 
 		public void Dispose()
 		{
