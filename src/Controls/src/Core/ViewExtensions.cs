@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Animations;
@@ -442,6 +443,30 @@ namespace Microsoft.Maui.Controls
 			}
 
 			return false;
+		}
+
+		static internal bool RequestFocus(this VisualElement view)
+		{
+			var focusRequest = new FocusRequest();
+
+			// if there is an attached handler, we use that and we will end up in the MapFocus method below
+			if (view.Handler is IViewHandler handler)
+				return handler.InvokeWithResult(nameof(IView.Focus), focusRequest);
+
+			// if there is no handler, we need to still run some code
+			MapFocus(view, focusRequest);
+			return focusRequest.Result;
+		}
+
+		static internal void MapFocus(this VisualElement view, FocusRequest args)
+		{
+			// if the view still does not have focus or is not getting focus, then request the focus using the old event system
+			if (!view.IsFocused && !args.Result && view.HasFocusChangeRequestedEvent)
+			{
+				var arg = new VisualElement.FocusRequestArgs { Focus = true };
+				view.InvokeFocusChangeRequested(arg);
+				args.TrySetResult(arg.Result);
+			}
 		}
 	}
 }

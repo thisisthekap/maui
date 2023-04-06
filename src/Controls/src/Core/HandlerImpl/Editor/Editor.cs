@@ -24,6 +24,10 @@ namespace Microsoft.Maui.Controls
 #endif
 			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(Text), MapText);
 			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(TextTransform), MapText);
+
+#if ANDROID
+			EditorHandler.CommandMapper.AppendToMapping(nameof(IEditor.Focus), MapFocus);
+#endif
 		}
 	}
 }

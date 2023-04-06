@@ -34,6 +34,10 @@ namespace Microsoft.Maui.Controls
 #endif
 			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(nameof(Text), MapText);
 			EntryHandler.Mapper.ModifyMappingWhen<Entry, IEntryHandler>(nameof(TextTransform), MapText);
+
+#if ANDROID
+			EntryHandler.CommandMapper.AppendToMapping(nameof(IEntry.Focus), MapFocus);
+#endif
 		}
 	}
 }

@@ -170,7 +170,7 @@ namespace Microsoft.Maui.DeviceTests
 				var contentViewHandler = CreateHandler<LayoutHandler>(layout);
 				await contentViewHandler.PlatformView.AttachAndRun(async () =>
 				{
-					searchBar1.ToPlatform().Focus(new FocusRequest(false));
+					searchBar1.ToPlatform().Focus(new FocusRequest());
 					await searchBar1.WaitForFocused();
 					Assert.True(searchBar1.IsFocused);
 					Assert.False(searchBar2.IsFocused);
@@ -191,11 +191,11 @@ namespace Microsoft.Maui.DeviceTests
 				var searchBarHandler = CreateHandler(searchBar);
 				await searchBarHandler.PlatformView.AttachAndRun(async () =>
 				{
-					searchBar.Handler.Invoke(nameof(IView.Focus), new FocusRequest(false));
+					searchBar.Handler.Invoke(nameof(IView.Focus), new FocusRequest());
 					await searchBar.WaitForFocused();
 					Assert.True(searchBar.IsFocused);
 
-					searchBar.Handler.Invoke(nameof(IView.Unfocus), new FocusRequest(false));
+					searchBar.Handler.Invoke(nameof(IView.Unfocus), new FocusRequest());
 					await searchBar.WaitForUnFocused();
 					Assert.False(searchBar.IsFocused);
 				});

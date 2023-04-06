@@ -28,6 +28,10 @@ namespace Microsoft.Maui.Controls
 #endif
 			SearchBarHandler.Mapper.ModifyMappingWhen<SearchBar, ISearchBarHandler>(nameof(Text), MapText);
 			SearchBarHandler.Mapper.ModifyMappingWhen<SearchBar, ISearchBarHandler>(nameof(TextTransform), MapText);
+
+#if ANDROID
+			SearchBarHandler.CommandMapper.AppendToMapping(nameof(ISearchBar.Focus), MapFocus);
+#endif
 		}
 	}
 }

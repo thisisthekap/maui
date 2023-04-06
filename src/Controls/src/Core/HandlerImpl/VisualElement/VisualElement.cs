@@ -39,6 +39,8 @@ namespace Microsoft.Maui.Controls
 			ViewHandler.ViewMapper.AppendToMapping(SemanticProperties.HintProperty.PropertyName, MapSemanticPropertiesHintProperty);
 			ViewHandler.ViewMapper.AppendToMapping(SemanticProperties.HeadingLevelProperty.PropertyName, MapSemanticPropertiesHeadingLevelProperty);
 			ViewHandler.ViewMapper.AppendToMapping(nameof(IViewHandler.ContainerView), MapContainerView);
+
+			ViewHandler.ViewCommandMapper.AppendToMappingWhen<VisualElement, IViewHandler>(nameof(IView.Focus), MapFocus);
 		}
 
 		public static void MapBackgroundColor(IViewHandler handler, IView view)
@@ -72,6 +74,14 @@ namespace Microsoft.Maui.Controls
 			{
 				ve._platformContainerViewChanged?.Invoke(arg2, EventArgs.Empty);
 			}
+		}
+
+		static void MapFocus(IViewHandler handler, IView view, object args)
+		{
+			if (args is not FocusRequest fr || view is not VisualElement element)
+				return;
+
+			element.MapFocus(fr);
 		}
 	}
 }
