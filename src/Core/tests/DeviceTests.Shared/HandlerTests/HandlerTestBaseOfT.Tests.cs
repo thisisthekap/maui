@@ -299,7 +299,7 @@ namespace Microsoft.Maui.DeviceTests
 			}
 		}
 
-		protected void AssertWithinTolerance(double expected, double actual, double tolerance = 0.2, string message = "Value was not within tolerance.") 
+		protected void AssertWithinTolerance(double expected, double actual, double tolerance = 0.2, string message = "Value was not within tolerance.")
 		{
 			var diff = System.Math.Abs(expected - actual);
 			if (diff > tolerance)
@@ -308,7 +308,7 @@ namespace Microsoft.Maui.DeviceTests
 			}
 		}
 
-		protected void AssertWithinTolerance(Graphics.Size expected, Graphics.Size actual, double tolerance = 0.2) 
+		protected void AssertWithinTolerance(Graphics.Size expected, Graphics.Size actual, double tolerance = 0.2)
 		{
 			AssertWithinTolerance(expected.Height, actual.Height, tolerance, "Height was not within tolerance.");
 			AssertWithinTolerance(expected.Width, actual.Width, tolerance, "Width was not within tolerance.");
