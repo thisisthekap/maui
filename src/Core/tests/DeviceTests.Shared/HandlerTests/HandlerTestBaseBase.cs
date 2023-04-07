@@ -176,7 +176,7 @@ namespace Microsoft.Maui.DeviceTests
 #endif
 		}
 
-		protected Task AssertColorAtPoint(IView view, Color color, Type handlerType, int x, int y) 
+		protected Task AssertColorAtPoint(IView view, Color color, Type handlerType, int x, int y)
 		{
 #if !TIZEN
 			return InvokeOnMainThreadAsync(async () =>
