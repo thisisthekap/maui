@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Maui.DeviceTests
 {
-	public abstract partial class FocusHandlerTests<THandler, TStub, TLayoutStub> : HandlerTestBase<THandler, TStub>
+	public abstract partial class FocusHandlerTests<THandler, TStub, TLayoutStub> : HandlerTestBaseBase<THandler, TStub>
 		where THandler : class, IViewHandler, new()
 		where TStub : IStubBase, new()
 		where TLayoutStub : IStubBase, ILayout, new()
@@ -27,8 +27,8 @@ namespace Microsoft.Maui.DeviceTests
 			TStub inputControl2;
 			var layout = new TLayoutStub
 			{
-				(inputControl1 = new TStub()),
-				(inputControl2 = new TStub())
+				(inputControl1 = new TStub { Width = 100, Height = 50 }),
+				(inputControl2 = new TStub { Width = 100, Height = 50 })
 			};
 			layout.Width = 100;
 			layout.Height = 150;
@@ -79,8 +79,8 @@ namespace Microsoft.Maui.DeviceTests
 			TStub inputControl2;
 			var layout = new TLayoutStub
 			{
-				(inputControl1 = new TStub()),
-				(inputControl2 = new TStub())
+				(inputControl1 = new TStub { Width = 100, Height = 50 }),
+				(inputControl2 = new TStub { Width = 100, Height = 50 })
 			};
 			layout.Width = 100;
 			layout.Height = 150;
@@ -98,7 +98,7 @@ namespace Microsoft.Maui.DeviceTests
 					Assert.True(result1);
 
 					// assert
-					await inputControl1.WaitForUnFocused();
+					await inputControl1.WaitForFocused();
 					Assert.True(inputControl1.IsFocused);
 					Assert.False(inputControl2.IsFocused);
 

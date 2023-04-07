@@ -13,8 +13,6 @@ using Xunit.Sdk;
 namespace Microsoft.Maui.DeviceTests
 {
 	public abstract partial class HandlerTestBase<THandler, TStub>
-		where THandler : class, IViewHandler, new()
-		where TStub : IStubBase, IView, new()
 	{
 		[Fact]
 		public async Task DisconnectHandlerDoesntCrash()
@@ -297,21 +295,6 @@ namespace Microsoft.Maui.DeviceTests
 				var expectedSize = new Size(size, size);
 				AssertWithinTolerance(expectedSize, nativeBoundingBox.Size);
 			}
-		}
-
-		protected void AssertWithinTolerance(double expected, double actual, double tolerance = 0.2, string message = "Value was not within tolerance.") 
-		{
-			var diff = System.Math.Abs(expected - actual);
-			if (diff > tolerance)
-			{
-				throw new XunitException($"{message} Expected: {expected}; Actual: {actual}; Tolerance {tolerance}");
-			}
-		}
-
-		protected void AssertWithinTolerance(Graphics.Size expected, Graphics.Size actual, double tolerance = 0.2) 
-		{
-			AssertWithinTolerance(expected.Height, actual.Height, tolerance, "Height was not within tolerance.");
-			AssertWithinTolerance(expected.Width, actual.Width, tolerance, "Width was not within tolerance.");
 		}
 
 		[Theory(DisplayName = "PlatformView Transforms are not empty")]
