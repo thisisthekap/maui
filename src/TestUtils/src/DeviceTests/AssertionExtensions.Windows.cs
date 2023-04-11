@@ -188,10 +188,11 @@ namespace Microsoft.Maui.DeviceTests
 
 					// attach to the UI
 					Grid grid;
-					var window = (mauiContext?.Services != null) ?
-						Extensions.DependencyInjection.ActivatorUtilities.GetServiceOrCreateInstance<Window>(mauiContext.Services) : new Window();
+					var window = (mauiContext?.Services != null)
+						? Extensions.DependencyInjection.ActivatorUtilities.GetServiceOrCreateInstance<Window>(mauiContext.Services)
+						: new Window();
 
-					window.Content = new Grid
+					window.Content = new TestWindowRoot(window)
 					{
 						HorizontalAlignment = HorizontalAlignment.Center,
 						VerticalAlignment = VerticalAlignment.Center,
@@ -236,7 +237,8 @@ namespace Microsoft.Maui.DeviceTests
 			}
 			else
 			{
-				var window = view.GetParentOfType<Window>() ?? throw new InvalidOperationException("View was attached to a window but there was no window.");
+				// Window is not a XAML type so is never on the hierarchy
+				var window = view.GetParentOfType<TestWindowRoot>()?.Window ?? throw new InvalidOperationException("View was attached to a window but there was no window.");
 				return await Run(() => action(window));
 			}
 
@@ -428,6 +430,16 @@ namespace Microsoft.Maui.DeviceTests
 		public static bool IsExcludedWithChildren(this FrameworkElement platformView)
 		{
 			throw new NotImplementedException();
+		}
+
+		class TestWindowRoot : Grid
+		{
+			public TestWindowRoot(Window window)
+			{
+				Window = window;
+			}
+
+			public Window Window { get; set; }
 		}
 	}
 }
