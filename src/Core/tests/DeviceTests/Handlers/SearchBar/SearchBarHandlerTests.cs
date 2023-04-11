@@ -317,8 +317,6 @@ namespace Microsoft.Maui.DeviceTests
 				SearchBarHandlerTests.UpdateCursorStartPosition(searchBarHandler, position);
 		}
 
-		// TODO: only iOS is working with the search bar focus tests
-#if IOS || MACCATALYST
 		[Category(TestCategory.SearchBar)]
 		public class SearchBarFocusTests : FocusHandlerTests<SearchBarHandler, SearchBarStub, VerticalStackLayoutStub>
 		{
@@ -326,6 +324,5 @@ namespace Microsoft.Maui.DeviceTests
 			{
 			}
 		}
-#endif
 	}
 }

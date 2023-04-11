@@ -59,10 +59,7 @@ namespace Microsoft.Maui
 		public ICommandMapper? Chained
 		{
 			get => _chained;
-			set
-			{
-				_chained = value;
-			}
+			set => _chained = value;
 		}
 	}
 

@@ -187,8 +187,6 @@ namespace Microsoft.Maui.DeviceTests
 		{
 		}
 
-		// TODO: only windows button focus tests are working
-#if WINDOWS
 		[Category(TestCategory.Button)]
 		public class ButtonFocusTests : FocusHandlerTests<ButtonHandler, ButtonStub, VerticalStackLayoutStub>
 		{
@@ -196,6 +194,5 @@ namespace Microsoft.Maui.DeviceTests
 			{
 			}
 		}
-#endif
 	}
 }
