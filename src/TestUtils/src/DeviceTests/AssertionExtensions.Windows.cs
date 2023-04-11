@@ -42,16 +42,6 @@ namespace Microsoft.Maui.DeviceTests
 
 		public static async Task WaitForFocused(this FrameworkElement view, int timeout = 1000)
 		{
-			if (view is AutoSuggestBox searchView)
-			{
-				var queryEditor = searchView.GetFirstDescendant<TextBox>();
-
-				if (queryEditor is null)
-					throw new Exception("Unable to locate TextBox on AutoSuggestBox");
-
-				view = queryEditor;
-			}
-
 			TaskCompletionSource focusSource = new TaskCompletionSource();
 			view.GotFocus += OnFocused;
 
@@ -84,8 +74,6 @@ namespace Microsoft.Maui.DeviceTests
 			{
 				view.LostFocus -= OnUnFocused;
 			}
-
-			await focusSource.Task.WaitAsync(TimeSpan.FromMilliseconds(timeout));
 
 			void OnUnFocused(object? sender, RoutedEventArgs e)
 			{
