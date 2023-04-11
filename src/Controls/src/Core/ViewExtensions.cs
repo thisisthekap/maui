@@ -453,24 +453,24 @@ namespace Microsoft.Maui.Controls
 
 			// if there is no handler, we need to still run some code
 			var focusRequest = new FocusRequest();
-			MapFocus(view, null, focusRequest);
+			MapFocus(view, focusRequest);
 			return focusRequest.Result;
 		}
 
-		static internal void MapFocus(this VisualElement view, FocusRequest args)
+		static internal void MapFocus(this VisualElement view, FocusRequest focusRequest)
 		{
 			// the virtual view is already focused
-			if (ve.IsFocused)
+			if (view.IsFocused)
 			{
 				focusRequest.TrySetResult(true);
 				return;
 			}
 
 			// if there are legacy events, then use that
-			if (ve.HasFocusChangeRequestedEvent)
+			if (view.HasFocusChangeRequestedEvent)
 			{
 				var arg = new VisualElement.FocusRequestArgs { Focus = true };
-				ve.InvokeFocusChangeRequested(arg);
+				view.InvokeFocusChangeRequested(arg);
 				focusRequest.TrySetResult(arg.Result);
 				return;
 			}

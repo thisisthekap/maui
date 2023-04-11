@@ -1,5 +1,4 @@
-﻿#if !TIZEN
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Maui.DeviceTests.Stubs;
 using Microsoft.Maui.Hosting;
 using Xunit;
