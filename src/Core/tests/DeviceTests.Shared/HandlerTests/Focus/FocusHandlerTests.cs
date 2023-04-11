@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Microsoft.Maui.DeviceTests
 {
-	public abstract partial class FocusHandlerTests<THandler, TStub, TLayoutStub> : HandlerTestBaseBase<THandler, TStub>
+	public abstract partial class FocusHandlerTests<THandler, TStub, TLayoutStub> : HandlerTestBasement<THandler, TStub>
 		where THandler : class, IViewHandler, new()
 		where TStub : IStubBase, new()
 		where TLayoutStub : IStubBase, ILayout, new()

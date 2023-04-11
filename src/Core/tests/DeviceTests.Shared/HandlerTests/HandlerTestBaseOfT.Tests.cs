@@ -1,4 +1,3 @@
-#if !TIZEN
 using System;
 using System.IO;
 using System.Threading;
@@ -361,4 +360,3 @@ namespace Microsoft.Maui.DeviceTests
 		}
 	}
 }
-#endif

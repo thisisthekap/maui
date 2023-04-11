@@ -1,4 +1,3 @@
-#if !TIZEN
 using System;
 using System.Threading.Tasks;
 using Microsoft.Maui.DeviceTests.Stubs;
@@ -9,10 +8,9 @@ using Xunit;
 
 namespace Microsoft.Maui.DeviceTests
 {
-	public partial class HandlerTestBase<THandler, TStub> : HandlerTestBaseBase<THandler, TStub>
+	public partial class HandlerTestBase<THandler, TStub> : HandlerTestBasement<THandler, TStub>
 		where THandler : class, IViewHandler, new()
 		where TStub : IStubBase, IView, new()
 	{
 	}
 }
-#endif

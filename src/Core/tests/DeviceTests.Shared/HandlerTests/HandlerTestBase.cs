@@ -13,7 +13,7 @@ using Xunit;
 
 namespace Microsoft.Maui.DeviceTests
 {
-	public class HandlerTestBase : HandlerTestBaseBase
+	public class HandlerTestBase : HandlerTestBasement
 	{
 	}
 }

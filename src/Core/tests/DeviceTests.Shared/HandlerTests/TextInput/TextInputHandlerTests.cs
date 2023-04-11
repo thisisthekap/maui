@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Microsoft.Maui.DeviceTests
 {
-	public abstract partial class TextInputHandlerTests<THandler, TStub> : HandlerTestBaseBase<THandler, TStub>
+	public abstract partial class TextInputHandlerTests<THandler, TStub> : HandlerTestBasement<THandler, TStub>
 		where THandler : class, IViewHandler, new()
 		where TStub : IStubBase, ITextInputStub, new()
 	{
@@ -83,4 +83,3 @@ namespace Microsoft.Maui.DeviceTests
 		protected abstract void SetNativeText(THandler entryHandler, string text);
 	}
 }
-#endif

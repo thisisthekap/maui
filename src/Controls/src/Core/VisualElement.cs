@@ -869,10 +869,8 @@ namespace Microsoft.Maui.Controls
 		public event EventHandler ChildrenReordered;
 
 		/// <include file="../../docs/Microsoft.Maui.Controls/VisualElement.xml" path="//Member[@MemberName='Focus']/Docs/*" />
-		public bool Focus()
-		{
-			return this.RequestFocus();
-		}
+		public bool Focus() =>
+			this.RequestFocus();
 
 		public event EventHandler<FocusEventArgs> Focused;
 
