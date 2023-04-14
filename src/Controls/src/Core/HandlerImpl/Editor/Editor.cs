@@ -20,10 +20,10 @@ namespace Microsoft.Maui.Controls
 		{
 			// Adjust the mappings to preserve Controls.Editor legacy behaviors
 #if WINDOWS
-			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
+			EditorHandler.Mapper.ReplaceMappingWhen<Editor, IEditorHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
 #endif
-			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(Text), MapText);
-			EditorHandler.Mapper.ModifyMappingWhen<Editor, IEditorHandler>(nameof(TextTransform), MapText);
+			EditorHandler.Mapper.ReplaceMappingWhen<Editor, IEditorHandler>(nameof(Text), MapText);
+			EditorHandler.Mapper.ReplaceMappingWhen<Editor, IEditorHandler>(nameof(TextTransform), MapText);
 
 #if ANDROID
 			EditorHandler.CommandMapper.AppendToMapping(nameof(IEditor.Focus), MapFocus);

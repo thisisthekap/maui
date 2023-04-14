@@ -13,7 +13,7 @@ namespace Microsoft.Maui.Controls
 
 		internal new static void RemapForControls()
 		{
-			FlyoutViewHandler.Mapper.ModifyMappingWhen<IFlyoutView, IFlyoutViewHandler>(nameof(FlyoutLayoutBehavior), MapFlyoutLayoutBehavior);
+			FlyoutViewHandler.Mapper.ReplaceMappingWhen<IFlyoutView, IFlyoutViewHandler>(nameof(FlyoutLayoutBehavior), MapFlyoutLayoutBehavior);
 		}
 
 		internal static void MapFlyoutLayoutBehavior(IFlyoutViewHandler handler, IFlyoutView view)

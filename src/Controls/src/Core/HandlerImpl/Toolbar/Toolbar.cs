@@ -37,20 +37,20 @@ namespace Microsoft.Maui.Controls
 		internal static void RemapForControls()
 		{
 #if ANDROID || WINDOWS || TIZEN
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(IToolbar.IsVisible), MapIsVisible);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(IToolbar.BackButtonVisible), MapBackButtonVisible);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.TitleIcon), MapTitleIcon);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.TitleView), MapTitleView);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.IconColor), MapIconColor);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.ToolbarItems), MapToolbarItems);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BackButtonTitle), MapBackButtonTitle);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BarBackground), MapBarBackground);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BarTextColor), MapBarTextColor);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(IToolbar.IsVisible), MapIsVisible);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(IToolbar.BackButtonVisible), MapBackButtonVisible);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.TitleIcon), MapTitleIcon);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.TitleView), MapTitleView);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.IconColor), MapIconColor);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.ToolbarItems), MapToolbarItems);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BackButtonTitle), MapBackButtonTitle);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BarBackground), MapBarBackground);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BarTextColor), MapBarTextColor);
 #endif
 #if WINDOWS
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BackButtonEnabled), MapBackButtonEnabled);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(PlatformConfiguration.WindowsSpecific.Page.ToolbarPlacementProperty.PropertyName, MapToolbarPlacement);
-			ToolbarHandler.Mapper.ModifyMappingWhen<Toolbar, IToolbarHandler>(PlatformConfiguration.WindowsSpecific.Page.ToolbarDynamicOverflowEnabledProperty.PropertyName, MapToolbarDynamicOverflowEnabled);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(nameof(Toolbar.BackButtonEnabled), MapBackButtonEnabled);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(PlatformConfiguration.WindowsSpecific.Page.ToolbarPlacementProperty.PropertyName, MapToolbarPlacement);
+			ToolbarHandler.Mapper.ReplaceMappingWhen<Toolbar, IToolbarHandler>(PlatformConfiguration.WindowsSpecific.Page.ToolbarDynamicOverflowEnabledProperty.PropertyName, MapToolbarDynamicOverflowEnabled);
 #endif
 		}
 	}

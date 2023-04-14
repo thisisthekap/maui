@@ -19,9 +19,9 @@ namespace Microsoft.Maui.Controls
 		{
 			// Adjust the mappings to preserve Controls.WebView legacy behaviors
 #if ANDROID
-			WebViewHandler.Mapper.ModifyMappingWhen<WebView, IWebViewHandler>(PlatformConfiguration.AndroidSpecific.WebView.DisplayZoomControlsProperty.PropertyName, MapDisplayZoomControls);
-			WebViewHandler.Mapper.ModifyMappingWhen<WebView, IWebViewHandler>(PlatformConfiguration.AndroidSpecific.WebView.EnableZoomControlsProperty.PropertyName, MapEnableZoomControls);
-			WebViewHandler.Mapper.ModifyMappingWhen<WebView, IWebViewHandler>(PlatformConfiguration.AndroidSpecific.WebView.MixedContentModeProperty.PropertyName, MapMixedContentMode);
+			WebViewHandler.Mapper.ReplaceMappingWhen<WebView, IWebViewHandler>(PlatformConfiguration.AndroidSpecific.WebView.DisplayZoomControlsProperty.PropertyName, MapDisplayZoomControls);
+			WebViewHandler.Mapper.ReplaceMappingWhen<WebView, IWebViewHandler>(PlatformConfiguration.AndroidSpecific.WebView.EnableZoomControlsProperty.PropertyName, MapEnableZoomControls);
+			WebViewHandler.Mapper.ReplaceMappingWhen<WebView, IWebViewHandler>(PlatformConfiguration.AndroidSpecific.WebView.MixedContentModeProperty.PropertyName, MapMixedContentMode);
 #endif
 		}
 	}

@@ -37,25 +37,25 @@ namespace Microsoft.Maui.Controls
 			// ILabel does not include the TextType property, so we map it here to handle HTML text
 			// And we map some of the other property handlers to Controls-specific versions that avoid stepping on HTML text settings
 
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextType), MapTextType);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(Text), MapText);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(FormattedText), MapText);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextTransform), MapText);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(TextType), MapTextType);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(Text), MapText);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(FormattedText), MapText);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(TextTransform), MapText);
 #if WINDOWS
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
 #endif
 #if ANDROID
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
 #endif
 #if IOS
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextDecorations), MapTextDecorations);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(CharacterSpacing), MapCharacterSpacing);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(LineHeight), MapLineHeight);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(ILabel.Font), MapFont);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(TextDecorations), MapTextDecorations);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(CharacterSpacing), MapCharacterSpacing);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(LineHeight), MapLineHeight);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(ILabel.Font), MapFont);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
 #endif
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(Label.LineBreakMode), MapLineBreakMode);
-			LabelHandler.Mapper.ModifyMappingWhen<Label, ILabelHandler>(nameof(Label.MaxLines), MapMaxLines);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(Label.LineBreakMode), MapLineBreakMode);
+			LabelHandler.Mapper.ReplaceMappingWhen<Label, ILabelHandler>(nameof(Label.MaxLines), MapMaxLines);
 		}
 	}
 }
