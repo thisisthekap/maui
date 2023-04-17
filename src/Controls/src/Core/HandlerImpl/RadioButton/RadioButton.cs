@@ -17,7 +17,7 @@ namespace Microsoft.Maui.Controls
 
 		internal new static void RemapForControls()
 		{
-			RadioButtonHandler.Mapper.ReplaceMappingWhen<RadioButton, IRadioButtonHandler>(nameof(IRadioButton.Content), MapContent);
+			RadioButtonHandler.Mapper.ReplaceMapping<RadioButton, IRadioButtonHandler>(nameof(IRadioButton.Content), MapContent);
 
 #if ANDROID
 			RadioButtonHandler.PlatformViewFactory = CreatePlatformView;

@@ -31,17 +31,17 @@ namespace Microsoft.Maui.Controls
 
 		internal new static void RemapForControls()
 		{
-			ButtonHandler.Mapper.ReplaceMappingWhen<Button, IButtonHandler>(nameof(ContentLayout), MapContentLayout);
+			ButtonHandler.Mapper.ReplaceMapping<Button, IButtonHandler>(nameof(ContentLayout), MapContentLayout);
 #if IOS
-			ButtonHandler.Mapper.ReplaceMappingWhen<Button, IButtonHandler>(nameof(Padding), MapPadding);
+			ButtonHandler.Mapper.ReplaceMapping<Button, IButtonHandler>(nameof(Padding), MapPadding);
 #endif
 #if WINDOWS
-			ButtonHandler.Mapper.ReplaceMappingWhen<Button, IButtonHandler>(nameof(ImageSource), MapImageSource);
+			ButtonHandler.Mapper.ReplaceMapping<Button, IButtonHandler>(nameof(ImageSource), MapImageSource);
 #endif
-			ButtonHandler.Mapper.ReplaceMappingWhen<Button, IButtonHandler>(nameof(Text), MapText);
+			ButtonHandler.Mapper.ReplaceMapping<Button, IButtonHandler>(nameof(Text), MapText);
 
-			ButtonHandler.Mapper.ReplaceMappingWhen<Button, IButtonHandler>(nameof(TextTransform), MapText);
-			ButtonHandler.Mapper.ReplaceMappingWhen<Button, IButtonHandler>(nameof(Button.LineBreakMode), MapLineBreakMode);
+			ButtonHandler.Mapper.ReplaceMapping<Button, IButtonHandler>(nameof(TextTransform), MapText);
+			ButtonHandler.Mapper.ReplaceMapping<Button, IButtonHandler>(nameof(Button.LineBreakMode), MapLineBreakMode);
 		}
 
 		/// <summary>

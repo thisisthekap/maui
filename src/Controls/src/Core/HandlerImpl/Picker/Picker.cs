@@ -21,12 +21,12 @@ namespace Microsoft.Maui.Controls
 		{
 			// Adjust the mappings to preserve Controls.Picker legacy behaviors
 #if IOS
-			PickerHandler.Mapper.ReplaceMappingWhen<Picker, IPickerHandler>(PlatformConfiguration.iOSSpecific.Picker.UpdateModeProperty.PropertyName, MapUpdateMode);
+			PickerHandler.Mapper.ReplaceMapping<Picker, IPickerHandler>(PlatformConfiguration.iOSSpecific.Picker.UpdateModeProperty.PropertyName, MapUpdateMode);
 #elif WINDOWS
-			PickerHandler.Mapper.ReplaceMappingWhen<Picker, IPickerHandler>(nameof(Picker.HorizontalOptions), MapHorizontalOptions);
-			PickerHandler.Mapper.ReplaceMappingWhen<Picker, IPickerHandler>(nameof(Picker.VerticalOptions), MapVerticalOptions);
+			PickerHandler.Mapper.ReplaceMapping<Picker, IPickerHandler>(nameof(Picker.HorizontalOptions), MapHorizontalOptions);
+			PickerHandler.Mapper.ReplaceMapping<Picker, IPickerHandler>(nameof(Picker.VerticalOptions), MapVerticalOptions);
 #endif
-			PickerHandler.Mapper.ReplaceMappingWhen<Picker, IPickerHandler>(nameof(Picker.ItemsSource), MapItemsSource);
+			PickerHandler.Mapper.ReplaceMapping<Picker, IPickerHandler>(nameof(Picker.ItemsSource), MapItemsSource);
 		}
 
 		internal static void MapItemsSource(IPickerHandler handler, IPicker view)

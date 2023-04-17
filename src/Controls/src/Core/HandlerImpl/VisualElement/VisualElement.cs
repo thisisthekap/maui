@@ -40,7 +40,7 @@ namespace Microsoft.Maui.Controls
 			ViewHandler.ViewMapper.AppendToMapping(SemanticProperties.HeadingLevelProperty.PropertyName, MapSemanticPropertiesHeadingLevelProperty);
 			ViewHandler.ViewMapper.AppendToMapping(nameof(IViewHandler.ContainerView), MapContainerView);
 
-			ViewHandler.ViewCommandMapper.AppendToMappingWhen<VisualElement, IViewHandler>(nameof(IView.Focus), MapFocus);
+			ViewHandler.ViewCommandMapper.AppendToMapping<VisualElement, IViewHandler>(nameof(IView.Focus), MapFocus);
 		}
 
 		public static void MapBackgroundColor(IViewHandler handler, IView view)
