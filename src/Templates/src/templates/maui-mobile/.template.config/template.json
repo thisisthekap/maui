@@ -59,6 +59,12 @@
         "replaces": "MS_EXT_VERSION",
         "defaultValue": "MS_EXT_VERSION_VALUE"
       },
+      "version": {
+        "type": "parameter",
+        "dataType": "string",
+        "replaces": "MAUI_VERSION",
+        "defaultValue": "MAUI_VERSION_VALUE"
+      },
       "Framework": {
         "type": "parameter",
         "description": "The target framework for the project.",

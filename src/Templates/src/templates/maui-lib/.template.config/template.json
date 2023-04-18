@@ -35,6 +35,12 @@
     ],
     "preferNameDirectory": true,
     "symbols": {
+      "version": {
+        "type": "parameter",
+        "dataType": "string",
+        "replaces": "MAUI_VERSION",
+        "defaultValue": "MAUI_VERSION_VALUE"
+      },
       "Framework": {
         "type": "parameter",
         "description": "The target framework for the project.",
