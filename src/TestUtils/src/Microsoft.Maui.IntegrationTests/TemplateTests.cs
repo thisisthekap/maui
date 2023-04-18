@@ -60,8 +60,8 @@ namespace Microsoft.Maui.IntegrationTests
 
 			EnableTizen(projectFile);
 			FileUtilities.ReplaceInFile(projectFile,
-				"<UseMaui>true</UseMaui>",
-				"<UseMaui>true</UseMaui><WindowsPackageType>None</WindowsPackageType>");
+				"<OutputType>Exe</OutputType>",
+				"<OutputType>Exe</OutputType><WindowsPackageType>None</WindowsPackageType>");
 
 			Assert.IsTrue(DotnetInternal.Build(projectFile, config, properties: BuildProps),
 				$"Project {Path.GetFileName(projectFile)} failed to build. Check test output/attachments for errors.");
