@@ -17,9 +17,6 @@ namespace Microsoft.Maui.Controls
 #if WINDOWS
 			[PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName] = MapDetectReadingOrderFromContent,
 #endif
-#if ANDROID
-			[nameof(TextColor)] = MapTextColor,
-#endif
 #if IOS
 			[nameof(TextDecorations)] = MapTextDecorations,
 			[nameof(CharacterSpacing)] = MapCharacterSpacing,
@@ -44,15 +41,12 @@ namespace Microsoft.Maui.Controls
 #if WINDOWS
 			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName, MapDetectReadingOrderFromContent);
 #endif
-#if ANDROID
-			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
-#endif
 #if IOS
-			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(TextDecorations), MapTextDecorations);
-			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(CharacterSpacing), MapCharacterSpacing);
-			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(LineHeight), MapLineHeight);
-			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(ILabel.Font), MapFont);
-			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
+			LabelHandler.Mapper.ModifyMapping<Label, ILabelHandler>(nameof(TextDecorations), MapTextDecorations);
+			LabelHandler.Mapper.ModifyMapping<Label, ILabelHandler>(nameof(CharacterSpacing), MapCharacterSpacing);
+			LabelHandler.Mapper.ModifyMapping<Label, ILabelHandler>(nameof(LineHeight), MapLineHeight);
+			LabelHandler.Mapper.ModifyMapping<Label, ILabelHandler>(nameof(ILabel.Font), MapFont);
+			LabelHandler.Mapper.ModifyMapping<Label, ILabelHandler>(nameof(TextColor), MapTextColor);
 #endif
 			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(Label.LineBreakMode), MapLineBreakMode);
 			LabelHandler.Mapper.ReplaceMapping<Label, ILabelHandler>(nameof(Label.MaxLines), MapMaxLines);
