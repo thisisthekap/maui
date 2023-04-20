@@ -290,8 +290,8 @@ namespace Microsoft.Maui.Controls
 
 		internal static new void RemapForControls()
 		{
-			LayoutHandler.Mapper.AppendToMapping(nameof(CascadeInputTransparent), MapInputTransparent);
-			LayoutHandler.Mapper.AppendToMapping(nameof(IView.InputTransparent), MapInputTransparent);
+			LayoutHandler.Mapper.AppendToMapping<Layout, ILayoutHandler>(nameof(CascadeInputTransparent), MapInputTransparent);
+			LayoutHandler.Mapper.AppendToMapping<Layout, ILayoutHandler>(nameof(IView.InputTransparent), MapInputTransparent);
 		}
 
 		public static readonly BindableProperty CascadeInputTransparentProperty =
