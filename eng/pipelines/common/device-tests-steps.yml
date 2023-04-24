@@ -31,18 +31,18 @@ steps:
     retryCountOnTaskFailure: 2
 
   - task: PublishTestResults@2
-    displayName: Publish the $(System.PhaseName) test results
+    displayName: Publish the $(System.JobName) test results
     condition: always()
     inputs:
       testResultsFormat: xUnit
       testResultsFiles: '$(TestResultsDirectory)/**/TestResults.xml'
-      testRunTitle: '$(System.PhaseName)'
+      testRunTitle: '$(System.JobName) (assempt: $(System.JobAttempt))'
 
   - task: PublishBuildArtifacts@1
     displayName: Publish Artifacts
     condition: always()
     inputs:
-      artifactName: $(System.PhaseName)
+      artifactName: $(System.JobName)_Attempt_$(System.JobAttempt)
 
   # This must always be placed as the last step in the job
   - template: agent-rebooter/mac.v1.yml@yaml-templates
