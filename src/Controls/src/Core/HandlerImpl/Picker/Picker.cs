@@ -6,16 +6,7 @@ namespace Microsoft.Maui.Controls
 	public partial class Picker
 	{
 		[Obsolete("Use PickerHandler.Mapper instead.")]
-		public static IPropertyMapper<IPicker, PickerHandler> ControlsPickerMapper = new PropertyMapper<Picker, PickerHandler>(PickerHandler.Mapper)
-		{
-#if IOS
-			[PlatformConfiguration.iOSSpecific.Picker.UpdateModeProperty.PropertyName] = MapUpdateMode,
-#elif WINDOWS
-			[nameof(Picker.HorizontalOptions)] = MapHorizontalOptions,
-			[nameof(Picker.VerticalOptions)] = MapVerticalOptions,
-#endif
-			[nameof(Picker.ItemsSource)] = MapItemsSource
-		};
+		public static IPropertyMapper<IPicker, PickerHandler> ControlsPickerMapper = new PropertyMapper<Picker, PickerHandler>(PickerHandler.Mapper);
 
 		internal static new void RemapForControls()
 		{

@@ -7,14 +7,7 @@ namespace Microsoft.Maui.Controls
 	{
 		[Obsolete("Use EditorHandler.Mapper instead.")]
 		public static IPropertyMapper<IEditor, EditorHandler> ControlsEditorMapper =
-			new PropertyMapper<Editor, EditorHandler>(EditorHandler.Mapper)
-			{
-#if WINDOWS
-				[PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName] = MapDetectReadingOrderFromContent,
-#endif
-				[nameof(Text)] = MapText,
-				[nameof(TextTransform)] = MapText,
-			};
+			new PropertyMapper<Editor, EditorHandler>(EditorHandler.Mapper);
 
 		internal static new void RemapForControls()
 		{

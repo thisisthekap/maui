@@ -15,19 +15,7 @@ namespace Microsoft.Maui.Controls
 		/// The property mapper that maps the abstract properties to the platform-specific methods for further processing.
 		/// </summary>
 		[Obsolete("Use ButtonHandler.Mapper instead.")]
-		public static IPropertyMapper<IButton, ButtonHandler> ControlsButtonMapper = new PropertyMapper<Button, ButtonHandler>(ButtonHandler.Mapper)
-		{
-			[nameof(ContentLayout)] = MapContentLayout,
-#if IOS
-			[nameof(Padding)] = MapPadding,
-#endif
-#if WINDOWS
-			[nameof(ImageSource)] = MapImageSource,
-#endif
-			[nameof(TextTransform)] = MapText,
-			[nameof(Text)] = MapText,
-			[nameof(Button.LineBreakMode)] = MapLineBreakMode,
-		};
+		public static IPropertyMapper<IButton, ButtonHandler> ControlsButtonMapper = new PropertyMapper<Button, ButtonHandler>(ButtonHandler.Mapper);
 
 		internal new static void RemapForControls()
 		{

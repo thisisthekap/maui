@@ -8,17 +8,7 @@ namespace Microsoft.Maui.Controls
 	{
 		[Obsolete("Use WindowHandler.Mapper instead.")]
 		public static IPropertyMapper<IWindow, WindowHandler> ControlsWindowMapper =
-			new PropertyMapper<Window, WindowHandler>(WindowHandler.Mapper)
-			{
-#if ANDROID
-				// This property is also on the Application Mapper since that's where the attached property exists
-				[PlatformConfiguration.AndroidSpecific.Application.WindowSoftInputModeAdjustProperty.PropertyName] = MapWindowSoftInputModeAdjust,
-#endif
-
-#if WINDOWS
-				[nameof(ITitledElement.Title)] = MapTitle
-#endif
-			};
+			new PropertyMapper<Window, WindowHandler>(WindowHandler.Mapper);
 
 		internal static new void RemapForControls()
 		{

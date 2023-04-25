@@ -7,19 +7,7 @@ namespace Microsoft.Maui.Controls
 	{
 		[Obsolete("Use EntryHandler.Mapper instead.")]
 		public static IPropertyMapper<IEntry, EntryHandler> ControlsEntryMapper =
-			new PropertyMapper<Entry, EntryHandler>(EntryHandler.Mapper)
-			{
-#if ANDROID
-				[PlatformConfiguration.AndroidSpecific.Entry.ImeOptionsProperty.PropertyName] = MapImeOptions,
-#elif WINDOWS
-				[PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName] = MapDetectReadingOrderFromContent,
-#elif IOS
-				[PlatformConfiguration.iOSSpecific.Entry.CursorColorProperty.PropertyName] = MapCursorColor,
-				[PlatformConfiguration.iOSSpecific.Entry.AdjustsFontSizeToFitWidthProperty.PropertyName] = MapAdjustsFontSizeToFitWidth,
-#endif
-				[nameof(Text)] = MapText,
-				[nameof(TextTransform)] = MapText,
-			};
+			new PropertyMapper<Entry, EntryHandler>(EntryHandler.Mapper);
 
 		internal static new void RemapForControls()
 		{

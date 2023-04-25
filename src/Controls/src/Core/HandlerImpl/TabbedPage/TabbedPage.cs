@@ -8,21 +8,7 @@ namespace Microsoft.Maui.Controls
 	public partial class TabbedPage
 	{
 		[Obsolete("Use TabbedViewHandler.Mapper instead.")]
-		public static IPropertyMapper<ITabbedView, ITabbedViewHandler> ControlsTabbedPageMapper = new PropertyMapper<TabbedPage, ITabbedViewHandler>(TabbedViewHandler.Mapper)
-		{
-			[nameof(BarBackground)] = MapBarBackground,
-			[nameof(BarBackgroundColor)] = MapBarBackgroundColor,
-			[nameof(BarTextColor)] = MapBarTextColor,
-			[nameof(UnselectedTabColor)] = MapUnselectedTabColor,
-			[nameof(SelectedTabColor)] = MapSelectedTabColor,
-			[nameof(MultiPage<TabbedPage>.ItemsSource)] = MapItemsSource,
-			[nameof(MultiPage<TabbedPage>.ItemTemplate)] = MapItemTemplate,
-			[nameof(MultiPage<TabbedPage>.SelectedItem)] = MapSelectedItem,
-			[nameof(CurrentPage)] = MapCurrentPage,
-#if ANDROID
-			[PlatformConfiguration.AndroidSpecific.TabbedPage.IsSwipePagingEnabledProperty.PropertyName] = MapIsSwipePagingEnabled
-#endif
-		};
+		public static IPropertyMapper<ITabbedView, ITabbedViewHandler> ControlsTabbedPageMapper = new PropertyMapper<TabbedPage, ITabbedViewHandler>(TabbedViewHandler.Mapper);
 
 		internal new static void RemapForControls()
 		{

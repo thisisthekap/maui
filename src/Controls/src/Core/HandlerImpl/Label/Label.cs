@@ -8,25 +8,7 @@ namespace Microsoft.Maui.Controls
 	public partial class Label
 	{
 		[Obsolete("Use LabelHandler.Mapper instead.")]
-		public static IPropertyMapper<ILabel, LabelHandler> ControlsLabelMapper = new PropertyMapper<Label, LabelHandler>(LabelHandler.Mapper)
-		{
-			[nameof(TextType)] = MapTextType,
-			[nameof(Text)] = MapText,
-			[nameof(FormattedText)] = MapText,
-			[nameof(TextTransform)] = MapText,
-#if WINDOWS
-			[PlatformConfiguration.WindowsSpecific.InputView.DetectReadingOrderFromContentProperty.PropertyName] = MapDetectReadingOrderFromContent,
-#endif
-#if IOS
-			[nameof(TextDecorations)] = MapTextDecorations,
-			[nameof(CharacterSpacing)] = MapCharacterSpacing,
-			[nameof(LineHeight)] = MapLineHeight,
-			[nameof(ILabel.Font)] = MapFont,
-			[nameof(TextColor)] = MapTextColor,
-#endif
-			[nameof(Label.LineBreakMode)] = MapLineBreakMode,
-			[nameof(Label.MaxLines)] = MapMaxLines,
-		};
+		public static IPropertyMapper<ILabel, LabelHandler> ControlsLabelMapper = new PropertyMapper<Label, LabelHandler>(LabelHandler.Mapper);
 
 		internal static new void RemapForControls()
 		{

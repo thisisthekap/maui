@@ -7,12 +7,7 @@ namespace Microsoft.Maui.Controls
 	{
 		[Obsolete("Use ScrollViewHandler.Mapper instead.")]
 		public static IPropertyMapper<IScrollView, ScrollViewHandler> ControlsScrollViewMapper =
-				new PropertyMapper<ScrollView, ScrollViewHandler>(ScrollViewHandler.Mapper)
-				{
-#if IOS
-					[PlatformConfiguration.iOSSpecific.ScrollView.ShouldDelayContentTouchesProperty.PropertyName] = MapShouldDelayContentTouches,
-#endif
-				};
+				new PropertyMapper<ScrollView, ScrollViewHandler>(ScrollViewHandler.Mapper);
 
 		internal static new void RemapForControls()
 		{

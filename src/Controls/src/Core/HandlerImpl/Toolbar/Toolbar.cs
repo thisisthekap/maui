@@ -14,25 +14,7 @@ namespace Microsoft.Maui.Controls
 
 		[Obsolete("Use ToolbarHandler.Mapper instead.")]
 		public static IPropertyMapper<Toolbar, ToolbarHandler> ControlsToolbarMapper =
-			new PropertyMapper<Toolbar, ToolbarHandler>(ToolbarHandler.Mapper)
-			{
-#if ANDROID || WINDOWS || TIZEN
-				[nameof(IToolbar.IsVisible)] = MapIsVisible,
-				[nameof(IToolbar.BackButtonVisible)] = MapBackButtonVisible,
-				[nameof(Toolbar.TitleIcon)] = MapTitleIcon,
-				[nameof(Toolbar.TitleView)] = MapTitleView,
-				[nameof(Toolbar.IconColor)] = MapIconColor,
-				[nameof(Toolbar.ToolbarItems)] = MapToolbarItems,
-				[nameof(Toolbar.BackButtonTitle)] = MapBackButtonTitle,
-				[nameof(Toolbar.BarBackground)] = MapBarBackground,
-				[nameof(Toolbar.BarTextColor)] = MapBarTextColor,
-#endif
-#if WINDOWS
-				[nameof(Toolbar.BackButtonEnabled)] = MapBackButtonEnabled,
-				[PlatformConfiguration.WindowsSpecific.Page.ToolbarPlacementProperty.PropertyName] = MapToolbarPlacement,
-				[PlatformConfiguration.WindowsSpecific.Page.ToolbarDynamicOverflowEnabledProperty.PropertyName] = MapToolbarDynamicOverflowEnabled,
-#endif
-			};
+			new PropertyMapper<Toolbar, ToolbarHandler>(ToolbarHandler.Mapper);
 
 		internal static void RemapForControls()
 		{

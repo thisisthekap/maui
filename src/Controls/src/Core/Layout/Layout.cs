@@ -304,11 +304,7 @@ namespace Microsoft.Maui.Controls
 		}
 
 		[Obsolete("Use ViewHandler.ViewMapper instead.")]
-		public static IPropertyMapper<IView, IViewHandler> ControlsLayoutMapper = new PropertyMapper<IView, IViewHandler>(ControlsVisualElementMapper)
-		{
-			[nameof(CascadeInputTransparent)] = MapInputTransparent,
-			[nameof(IView.InputTransparent)] = MapInputTransparent,
-		};
+		public static IPropertyMapper<IView, IViewHandler> ControlsLayoutMapper = new PropertyMapper<IView, IViewHandler>(ControlsVisualElementMapper);
 
 		void UpdateDescendantInputTransparent()
 		{

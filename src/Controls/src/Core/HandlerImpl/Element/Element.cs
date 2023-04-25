@@ -9,11 +9,7 @@ namespace Microsoft.Maui.Controls
 	public partial class Element
 	{
 		[Obsolete("Use ViewHandler.ViewMapper instead.")]
-		public static IPropertyMapper<Maui.IElement, IElementHandler> ControlsElementMapper = new PropertyMapper<IElement, IElementHandler>(ViewHandler.ViewMapper)
-		{
-			[AutomationProperties.IsInAccessibleTreeProperty.PropertyName] = MapAutomationPropertiesIsInAccessibleTree,
-			[AutomationProperties.ExcludedWithChildrenProperty.PropertyName] = MapAutomationPropertiesExcludedWithChildren,
-		};
+		public static IPropertyMapper<Maui.IElement, IElementHandler> ControlsElementMapper = new PropertyMapper<IElement, IElementHandler>(ViewHandler.ViewMapper);
 
 		internal static void RemapForControls()
 		{
