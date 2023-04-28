@@ -6,6 +6,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Platform;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Handlers;
+using Microsoft.Maui.Hosting;
 using Microsoft.Maui.Platform;
 using Xunit;
 
@@ -14,6 +15,18 @@ namespace Microsoft.Maui.DeviceTests
 	[Category(TestCategory.Label)]
 	public partial class LabelTests : ControlsHandlerTestBase
 	{
+		void SetupBuilder()
+		{
+			EnsureHandlerCreated(builder =>
+			{
+				builder.ConfigureMauiHandlers(handlers =>
+				{
+					handlers.AddHandler<Label, LabelHandler>();
+					handlers.AddHandler<Layout, LayoutHandler>();
+				});
+			});
+		}
+
 		[Theory]
 		[ClassData(typeof(TextTransformCases))]
 		public async Task InitialTextTransformApplied(string text, TextTransform transform, string expected)
@@ -75,10 +88,10 @@ namespace Microsoft.Maui.DeviceTests
 
 		string TextForHandler(LabelHandler handler)
 		{
-#if __IOS__
+#if IOS || MACCATALYST
 			return handler.PlatformView.AttributedText?.Value;
-#elif __ANDROID__
-				return handler.PlatformView.TextFormatted.ToString();
+#elif ANDROID
+			return handler.PlatformView.TextFormatted.ToString();
 #elif WINDOWS
 			return handler.PlatformView.Text;
 #endif
@@ -229,6 +242,41 @@ namespace Microsoft.Maui.DeviceTests
 			Assert.Equal(expectedLines, platformValue);
 		}
 
+		[Fact]
+		public async Task ChangingTextTypeWithFormattedTextSwitchesTextSource()
+		{
+			SetupBuilder();
+
+			Label label;
+			var layout = new VerticalStackLayout
+			{
+				(label = new Label
+				{
+					WidthRequest = 200,
+					HeightRequest = 100,
+					BackgroundColor = Colors.Blue,
+					FormattedText = new FormattedString
+					{
+						Spans =
+						{
+							new Span { Text = "short", TextColor = Colors.Red, FontSize = 20 },
+							new Span { Text = " long second string"}
+						}
+					},
+				})
+			};
+
+			await AttachAndRun(layout, async (handler) =>
+			{
+				var platformView = handler.ToPlatform();
+				await platformView.AssertContainsColor(Colors.Red, MauiContext);
+
+				label.TextType = TextType.Html;
+
+				await platformView.AssertDoesNotContainColor(Colors.Red, MauiContext);
+			});
+		}
+
 		[Theory]
 		[InlineData(TextAlignment.Center)]
 		[InlineData(TextAlignment.Start)]
@@ -261,10 +309,10 @@ namespace Microsoft.Maui.DeviceTests
 			await InvokeOnMainThreadAsync(async () =>
 			{
 				var formattedHandler = CreateHandler<LabelHandler>(formattedLabel);
-				var formattedBitmap = await formattedHandler.PlatformView.ToBitmap();
+				var formattedBitmap = await formattedHandler.PlatformView.ToBitmap(MauiContext);
 
 				var normalHandler = CreateHandler<LabelHandler>(normalLabel);
-				var normalBitmap = await normalHandler.PlatformView.ToBitmap();
+				var normalBitmap = await normalHandler.PlatformView.ToBitmap(MauiContext);
 
 				await normalBitmap.AssertEqualAsync(formattedBitmap);
 			});
@@ -298,13 +346,13 @@ namespace Microsoft.Maui.DeviceTests
 			await InvokeOnMainThreadAsync(async () =>
 			{
 				var initialHandler = CreateHandler<LabelHandler>(initialLabel);
-				var initialBitmap = await initialHandler.PlatformView.ToBitmap();
+				var initialBitmap = await initialHandler.PlatformView.ToBitmap(MauiContext);
 
 				var updatedHandler = CreateHandler<LabelHandler>(updatedLabel);
 
 				updatedLabel.FormattedText = GetFormattedString();
 
-				var updatedBitmap = await updatedHandler.PlatformView.ToBitmap();
+				var updatedBitmap = await updatedHandler.PlatformView.ToBitmap(MauiContext);
 
 				await updatedBitmap.AssertEqualAsync(initialBitmap);
 			});
@@ -358,10 +406,10 @@ namespace Microsoft.Maui.DeviceTests
 			await InvokeOnMainThreadAsync(async () =>
 			{
 				var formattedHandler = CreateHandler<LabelHandler>(formattedLabel);
-				var formattedBitmap = await formattedHandler.PlatformView.ToBitmap();
+				var formattedBitmap = await formattedHandler.PlatformView.ToBitmap(MauiContext);
 
 				var normalHandler = CreateHandler<LabelHandler>(normalLabel);
-				var normalBitmap = await normalHandler.PlatformView.ToBitmap();
+				var normalBitmap = await normalHandler.PlatformView.ToBitmap(MauiContext);
 
 				await normalBitmap.AssertEqualAsync(formattedBitmap);
 			});
