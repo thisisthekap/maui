@@ -1,0 +1,10 @@
+<Project>
+
+  <PropertyGroup>
+    <MauiWorkloadVersion>@VERSION@</MauiWorkloadVersion>
+    <MauiWorkloadTargetFramework>@TFM@</MauiWorkloadTargetFramework>
+    <MauiWorkloadTargetFrameworkVersion>@MAUI_DOTNET_VERSION@</MauiWorkloadTargetFrameworkVersion>
+    <MauiVersion Condition=" '$(MauiVersion)' == '' ">$(MauiWorkloadVersion)</MauiVersion>
+  </PropertyGroup>
+
+</Project>
