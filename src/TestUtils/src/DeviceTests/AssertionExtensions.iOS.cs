@@ -418,10 +418,13 @@ namespace Microsoft.Maui.DeviceTests
 			}
 		}
 
-		public static async Task ThrowScreenshot(this UIView view, IMauiContext mauiContext)
+		public static async Task ThrowScreenshot(this UIView view, IMauiContext mauiContext, Exception? ex = null)
 		{
 			var bitmap = await view.ToBitmap(mauiContext);
-			throw new XunitException(CreateScreenshotError(bitmap, "There was an error."));
+			if (ex is null)
+				throw new XunitException(CreateScreenshotError(bitmap, "There was an error."));
+			else
+				throw new XunitException(CreateScreenshotError(bitmap, "There was an error: " + ex.Message), ex);
 		}
 
 		public static UILineBreakMode ToPlatform(this LineBreakMode mode) =>

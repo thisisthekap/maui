@@ -446,10 +446,13 @@ namespace Microsoft.Maui.DeviceTests
 			}
 		}
 
-		public static async Task ThrowScreenshot(this FrameworkElement view, IMauiContext mauiContext)
+		public static async Task ThrowScreenshot(this FrameworkElement view, IMauiContext mauiContext, Exception? ex = null)
 		{
 			var bitmap = await view.ToBitmap(mauiContext);
-			throw new XunitException(await CreateScreenshotError(bitmap, "There was an error."));
+			if (ex is null)
+				throw new XunitException(await CreateScreenshotError(bitmap, "There was an error."));
+			else
+				throw new XunitException(await CreateScreenshotError(bitmap, "There was an error: " + ex.Message), ex);
 		}
 
 		public static TextTrimming ToPlatform(this LineBreakMode mode) =>
