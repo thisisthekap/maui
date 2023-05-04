@@ -388,8 +388,6 @@ namespace Microsoft.Maui.DeviceTests
 
 		protected async Task OpenFlyout(ShellRenderer shellRenderer, TimeSpan? timeOut = null)
 		{
-			try {
-				
 			var flyoutView = GetFlyoutPlatformView(shellRenderer);
 			var drawerLayout = GetDrawerLayout(shellRenderer);
 
@@ -413,11 +411,6 @@ namespace Microsoft.Maui.DeviceTests
 				drawerLayout.DrawerOpened -= OnDrawerOpened;
 				taskCompletionSource.SetResult(true);
 			}
-
-			} catch (Exception ex) {
-				await shellRenderer.ToPlatform().ThrowScreenshot(MauiContext, ex);
-			}
-
 		}
 
 		protected async Task ScrollFlyoutToBottom(ShellRenderer shellRenderer)
