@@ -108,6 +108,9 @@ namespace Microsoft.Maui.DeviceTests
 		public static async Task<string> CreateEqualError(this CanvasBitmap bitmap, CanvasBitmap other, string message) =>
 			$"{message} This is what it looked like: <img>{await bitmap.ToBase64StringAsync()}</img> and <img>{await other.ToBase64StringAsync()}</img>";
 
+		public static async Task<string> CreateScreenshotError(this CanvasBitmap bitmap, string message) =>
+			$"{message} This is what it looked like:<img>{await bitmap.ToBase64StringAsync()}</img>";
+
 		public static async Task<string> ToBase64StringAsync(this CanvasBitmap bitmap)
 		{
 			using var ms = new InMemoryRandomAccessStream();
@@ -441,6 +444,12 @@ namespace Microsoft.Maui.DeviceTests
 				}
 				return true;
 			}
+		}
+
+		public static async Task ThrowScreenshot(this FrameworkElement view, IMauiContext mauiContext)
+		{
+			var bitmap = await view.ToBitmap(mauiContext);
+			throw new XunitException(await CreateScreenshotError(bitmap, "There was an error."));
 		}
 
 		public static TextTrimming ToPlatform(this LineBreakMode mode) =>

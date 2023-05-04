@@ -82,6 +82,9 @@ namespace Microsoft.Maui.DeviceTests
 		public static string CreateEqualError(this UIImage bitmap, UIImage other, string message) =>
 			$"{message} This is what it looked like: <img>{bitmap.ToBase64String()}</img> and <img>{other.ToBase64String()}</img>";
 
+		public static string CreateScreenshotError(this UIImage bitmap, string message) =>
+			$"{message} This is what it looked like:<img>{bitmap.ToBase64String()}</img>";
+
 		public static string ToBase64String(this UIImage bitmap)
 		{
 			var data = bitmap.AsPNG();
@@ -413,6 +416,12 @@ namespace Microsoft.Maui.DeviceTests
 				}
 				return true;
 			}
+		}
+
+		public static async Task ThrowScreenshot(this UIView view, IMauiContext mauiContext)
+		{
+			var bitmap = await view.ToBitmap(mauiContext);
+			throw new XunitException(CreateScreenshotError(bitmap, "There was an error."));
 		}
 
 		public static UILineBreakMode ToPlatform(this LineBreakMode mode) =>
