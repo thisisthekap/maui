@@ -1,5 +1,4 @@
 ﻿#nullable disable
-using System;
 using Microsoft.Maui.Controls.Platform;
 
 namespace Microsoft.Maui.Controls
@@ -13,7 +12,6 @@ namespace Microsoft.Maui.Controls
 		public static void MapLineHeight(LabelHandler handler, Label label) => MapLineHeight((ILabelHandler)handler, label);
 		public static void MapFont(LabelHandler handler, Label label) => MapFont((ILabelHandler)handler, label);
 		public static void MapTextColor(LabelHandler handler, Label label) => MapTextColor((ILabelHandler)handler, label);
-
 
 		public static void MapTextType(ILabelHandler handler, Label label)
 		{
