@@ -2,6 +2,7 @@
 using System;
 using Android.Text;
 using Android.Widget;
+using AndroidX.AppCompat.Widget;
 using Microsoft.Maui.Controls.Internals;
 
 namespace Microsoft.Maui.Controls.Platform
@@ -31,7 +32,7 @@ namespace Microsoft.Maui.Controls.Platform
 
 		public static void UpdateMaxLines(this TextView textView, Label label)
 		{
-			// Linebreak mode also handles settng MaxLines
+			// Linebreak mode also handles setting MaxLines
 			textView.SetLineBreakMode(label.LineBreakMode, label.MaxLines);
 		}
 
@@ -67,12 +68,11 @@ namespace Microsoft.Maui.Controls.Platform
 					break;
 				case LineBreakMode.TailTruncation:
 
-					// Leaving this in for now to preserve existing behavior
-					// Technically, we don't _need_ this for Labels; they will handle Ellipsization at the end just fine, even with multiple lines
-					// But we don't have a mechanism for setting MaxLines on other controls (e.g., Button) right now, so we need to force it here or
-					// they will potentially exceed a single line. Also, changing this behavior the for Labels would technically be breaking (though
-					// possibly less surprising than what happens currently).
-					maxLines = 1;
+					// We don't have a mechanism for setting MaxLines on other controls (e.g., Button) right now, so we need to force it here or
+					// they will potentially exceed a single line. 
+					if (textView is AppCompatButton)
+						maxLines = 1;
+
 					textView.Ellipsize = TextUtils.TruncateAt.End;
 					break;
 				case LineBreakMode.MiddleTruncation:
