@@ -39,7 +39,14 @@ namespace Microsoft.Maui.Controls.Platform
 		internal static void SetLineBreakMode(this TextView textView, LineBreakMode lineBreakMode, int? maxLines = null)
 		{
 			if (!maxLines.HasValue || maxLines <= 0)
-				maxLines = int.MaxValue;
+			{
+				// Without setting the MaxLines property, to equalize behaviors across platforms
+				// we set the max to 1.
+				if (lineBreakMode == LineBreakMode.TailTruncation)
+					maxLines = 1;
+				else
+					maxLines = int.MaxValue;
+			}
 
 			bool singleLine = false;
 			bool shouldSetSingleLine = !OperatingSystem.IsAndroidVersionAtLeast(23);
