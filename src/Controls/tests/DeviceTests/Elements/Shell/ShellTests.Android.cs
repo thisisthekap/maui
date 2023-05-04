@@ -388,33 +388,36 @@ namespace Microsoft.Maui.DeviceTests
 
 		protected async Task OpenFlyout(ShellRenderer shellRenderer, TimeSpan? timeOut = null)
 		{
-			try {
-				
-			var flyoutView = GetFlyoutPlatformView(shellRenderer);
-			var drawerLayout = GetDrawerLayout(shellRenderer);
-
-			if (!drawerLayout.FlyoutFirstDrawPassFinished)
-				await Task.Delay(10);
-
-			var hamburger =
-				GetPlatformToolbar((IPlatformViewHandler)shellRenderer).GetChildrenOfType<AppCompatImageButton>().FirstOrDefault() ??
-				throw new InvalidOperationException("Unable to find Drawer Button");
-
-			timeOut = timeOut ?? TimeSpan.FromSeconds(2);
-
-			TaskCompletionSource<object> taskCompletionSource = new TaskCompletionSource<object>();
-			drawerLayout.DrawerOpened += OnDrawerOpened;
-			hamburger.PerformClick();
-
-			await taskCompletionSource.Task.WaitAsync(timeOut.Value);
-
-			void OnDrawerOpened(object sender, DrawerLayout.DrawerOpenedEventArgs e)
+			try
 			{
-				drawerLayout.DrawerOpened -= OnDrawerOpened;
-				taskCompletionSource.SetResult(true);
-			}
 
-			} catch (Exception ex) {
+				var flyoutView = GetFlyoutPlatformView(shellRenderer);
+				var drawerLayout = GetDrawerLayout(shellRenderer);
+
+				if (!drawerLayout.FlyoutFirstDrawPassFinished)
+					await Task.Delay(10);
+
+				var hamburger =
+					GetPlatformToolbar((IPlatformViewHandler)shellRenderer).GetChildrenOfType<AppCompatImageButton>().FirstOrDefault() ??
+					throw new InvalidOperationException("Unable to find Drawer Button");
+
+				timeOut = timeOut ?? TimeSpan.FromSeconds(2);
+
+				TaskCompletionSource<object> taskCompletionSource = new TaskCompletionSource<object>();
+				drawerLayout.DrawerOpened += OnDrawerOpened;
+				hamburger.PerformClick();
+
+				await taskCompletionSource.Task.WaitAsync(timeOut.Value);
+
+				void OnDrawerOpened(object sender, DrawerLayout.DrawerOpenedEventArgs e)
+				{
+					drawerLayout.DrawerOpened -= OnDrawerOpened;
+					taskCompletionSource.SetResult(true);
+				}
+
+			}
+			catch (Exception ex)
+			{
 				await shellRenderer.ToPlatform().ThrowScreenshot(MauiContext, ex);
 			}
 
