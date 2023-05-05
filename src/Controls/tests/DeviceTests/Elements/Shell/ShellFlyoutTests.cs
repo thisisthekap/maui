@@ -234,13 +234,21 @@ namespace Microsoft.Maui.DeviceTests
 			},
 			async (shell, handler) =>
 			{
+				try {
 				await OpenFlyout(handler);
+				} catch (Exception ex) {
+					await shellRenderer.ToPlatform().ThrowScreenshot(MauiContext, "OpenFlyout", ex);
+				}
 
 				var initialBox = (shell.FlyoutHeader as IView).GetBoundingBox();
 
 				AssertionExtensions.CloseEnough(250, initialBox.Height, 0.3);
 
+				try {
 				await ScrollFlyoutToBottom(handler);
+				} catch (Exception ex) {
+					await shellRenderer.ToPlatform().ThrowScreenshot(MauiContext, "ScrollFlyoutToBottom", ex);
+				}
 
 				var scrolledBox = (shell.FlyoutHeader as IView).GetBoundingBox();
 				AssertionExtensions.CloseEnough(100, scrolledBox.Height, 0.3);
