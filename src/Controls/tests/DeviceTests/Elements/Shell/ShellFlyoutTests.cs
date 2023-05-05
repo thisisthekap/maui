@@ -237,7 +237,7 @@ namespace Microsoft.Maui.DeviceTests
 				try {
 				await OpenFlyout(handler);
 				} catch (Exception ex) {
-					await shellRenderer.ToPlatform().ThrowScreenshot(MauiContext, "OpenFlyout", ex);
+					await handler.ToPlatform().ThrowScreenshot(MauiContext, "OpenFlyout", ex);
 				}
 
 				var initialBox = (shell.FlyoutHeader as IView).GetBoundingBox();
@@ -247,7 +247,7 @@ namespace Microsoft.Maui.DeviceTests
 				try {
 				await ScrollFlyoutToBottom(handler);
 				} catch (Exception ex) {
-					await shellRenderer.ToPlatform().ThrowScreenshot(MauiContext, "ScrollFlyoutToBottom", ex);
+					await handler.ToPlatform().ThrowScreenshot(MauiContext, "ScrollFlyoutToBottom", ex);
 				}
 
 				var scrolledBox = (shell.FlyoutHeader as IView).GetBoundingBox();
