@@ -597,13 +597,13 @@ namespace Microsoft.Maui.DeviceTests
 			return Task.CompletedTask;
 		}
 
-		public static async Task ThrowScreenshot(this AView view, IMauiContext mauiContext, Exception? ex = null)
+		public static async Task ThrowScreenshot(this AView view, IMauiContext mauiContext, string? message = null, Exception? ex = null)
 		{
 			var bitmap = await view.ToBitmap(mauiContext);
 			if (ex is null)
-				throw new XunitException(CreateScreenshotError(bitmap, "There was an error."));
+				throw new XunitException(CreateScreenshotError(bitmap, message ?? "There was an error."));
 			else
-				throw new XunitException(CreateScreenshotError(bitmap, "There was an error: " + ex.Message), ex);
+				throw new XunitException(CreateScreenshotError(bitmap, message ?? "There was an error: " + ex.Message), ex);
 		}
 
 		public static TextUtils.TruncateAt? ToPlatform(this LineBreakMode mode) =>
