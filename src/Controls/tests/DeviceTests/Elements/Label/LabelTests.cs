@@ -204,6 +204,32 @@ namespace Microsoft.Maui.DeviceTests
 			}));
 		}
 
+		[Fact(DisplayName = "LineBreakMode TailTruncation does not affect MaxLines")]
+		public async Task TailTruncationDoesNotAffectMaxLines()
+		{
+			var label = new Label()
+			{
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+				MaxLines = 3,
+				LineBreakMode = LineBreakMode.TailTruncation,
+			};
+
+			var handler = await CreateHandlerAsync<LabelHandler>(label);
+			var platformLabel = GetPlatformLabel(handler);
+
+			await InvokeOnMainThreadAsync(() =>
+			{
+				Assert.Equal(3, GetPlatformMaxLines(handler));
+				Assert.Equal(LineBreakMode.TailTruncation.ToPlatform(), GetPlatformLineBreakMode(handler));
+
+				label.LineBreakMode = LineBreakMode.CharacterWrap;
+				platformLabel.UpdateLineBreakMode(label);
+
+				Assert.Equal(3, GetPlatformMaxLines(handler));
+				Assert.Equal(LineBreakMode.CharacterWrap.ToPlatform(), GetPlatformLineBreakMode(handler));
+			});
+		}
+
 		[Fact(DisplayName = "MaxLines Initializes Correctly")]
 		public async Task MaxLinesInitializesCorrectly()
 		{
