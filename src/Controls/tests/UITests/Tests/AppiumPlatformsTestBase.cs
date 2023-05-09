@@ -2,6 +2,7 @@
 using Microsoft.Maui.Appium;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using OpenQA.Selenium;
 using TestUtils.Appium.UITests;
 
 namespace Microsoft.Maui.AppiumTests
@@ -18,6 +19,7 @@ namespace Microsoft.Maui.AppiumTests
 	public class AppiumPlatformsTestBase : AppiumUITestBase
 	{
 		TestDevice _testDevice;
+
 		public AppiumPlatformsTestBase(TestDevice device)
 		{
 			_testDevice = device;
@@ -36,7 +38,7 @@ namespace Microsoft.Maui.AppiumTests
 				File.WriteAllText(Path.Combine(logDir, $"{TestContext.CurrentContext.Test.MethodName}-PageSource.txt"), pageSource);
 
 				var screenshot = Driver?.GetScreenshot();
-				screenshot?.SaveAsFile(Path.Combine(logDir, $"{TestContext.CurrentContext.Test.MethodName}-ScreenShot.png"));
+				screenshot? .SaveAsFile(Path.Combine(logDir, $"{TestContext.CurrentContext.Test.MethodName}-ScreenShot.png"));
 			}
 
 			//this crashes on Android
@@ -44,8 +46,8 @@ namespace Microsoft.Maui.AppiumTests
 				Driver?.ResetApp();
 		}
 
-
-		[OneTimeSetUp]
+			
+		[OneTimeSetUp()]
 		public void OneTimeSetup()
 		{
 			InitialSetup();
@@ -80,11 +82,48 @@ namespace Microsoft.Maui.AppiumTests
 					break;
 				case TestDevice.Windows:
 					testConfig.DeviceName = "WindowsPC";
-					testConfig.AppPath = Environment.GetEnvironmentVariable("WINDOWS_APP_PATH") ?? "";
+					testConfig.AppPath = Environment.GetEnvironmentVariable("WINDOWS_APP_PATH") ?? "C:\\my-projects\\maui\\src\\Controls\\samples\\Controls.Sample.UITests\\bin\\Debug\\net7.0-android\\Controls.Sample.UITests.dll";
 					break;
 			}
 
 			return testConfig;
+		}
+
+		public void VerifyScreenshot(string? name = null, Assembly? assembly = null)
+		{
+			if (name == null)
+				name = TestContext.CurrentContext.Test.MethodName;
+
+			if (assembly == null)
+				assembly = Assembly.GetCallingAssembly();
+			string projectRootDirectory = assembly.Location;
+
+			Screenshot? screenshot = Driver?.GetScreenshot();
+			if (screenshot == null)
+			{
+				throw new InvalidOperationException("Failed to get screenshot");
+			}
+
+			byte[] screenshotBytes = screenshot.AsByteArray;
+
+			string platform = _testDevice switch
+			{
+				TestDevice.Android => "android",
+				TestDevice.iOS => "ios",
+				TestDevice.Mac => "mac",
+				TestDevice.Windows => "windows",
+				_ => throw new NotImplementedException($"Unknown device type {_testDevice}"),
+			};
+
+			string baselineDirectory = Path.Combine(projectRootDirectory, "snapshots-baseline");
+			string diffsDirectory = Path.Combine(projectRootDirectory, "snapshots-diff");
+			string imageFileName = $"{name}-{platform}.png";
+
+			bool baselineImageExists = !VisualTestingUtils.VerifyBaselineImageExists(baselineDirectory, imageFileName, screenshotBytes, diffsDirectory);
+			Assert.True(baselineImageExists, $"Baseline image doesn't exist: {imageFileName}");
+
+			bool screenshotsMatch = VisualTestingUtils.VerifyImagesSame(baselineDirectory, imageFileName, screenshotBytes, 1.0, out double percentageDifference, diffsDirectory);
+			Assert.True(screenshotsMatch, $"Screenshot different than baseline: {imageFileName} ({percentageDifference}% difference)");
 		}
 	}
 }
