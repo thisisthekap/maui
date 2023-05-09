@@ -7,7 +7,7 @@ namespace Microsoft.Maui
 	{
 		public static bool VerifyBaselineImageExists(string baselineDirectory, string imageFileName, byte[] actualImageBytes, string diffsDirectory)
 		{
-			if (! File.Exists(Path.Combine(baselineDirectory, imageFileName)))
+			if (!File.Exists(Path.Combine(baselineDirectory, imageFileName)))
 			{
 				Directory.CreateDirectory(diffsDirectory);
 
