@@ -96,7 +96,8 @@ namespace Microsoft.Maui.AppiumTests
 
 			if (assembly == null)
 				assembly = Assembly.GetCallingAssembly();
-			string projectRootDirectory = assembly.Location;
+			string assemblyDirectory = Path.GetDirectoryName(assembly.Location)!;
+			string projectRootDirectory = Path.GetFullPath(Path.Combine(assemblyDirectory, "..\\..\\.."));
 
 			Screenshot? screenshot = Driver?.GetScreenshot();
 			if (screenshot == null)
@@ -119,11 +120,18 @@ namespace Microsoft.Maui.AppiumTests
 			string diffsDirectory = Path.Combine(projectRootDirectory, "snapshots-diff");
 			string imageFileName = $"{name}-{platform}.png";
 
-			bool baselineImageExists = !VisualTestingUtils.VerifyBaselineImageExists(baselineDirectory, imageFileName, screenshotBytes, diffsDirectory);
-			Assert.True(baselineImageExists, $"Baseline image doesn't exist: {imageFileName}");
+			if (!VisualTestingUtils.VerifyBaselineImageExists(baselineDirectory, imageFileName, screenshotBytes, diffsDirectory))
+			{
+				Assert.Fail(
+					$"Baseline snapshot not yet created: {Path.Combine(baselineDirectory, imageFileName)}\n" +
+					$"Ensure new snapshot is correct:    {Path.Combine(diffsDirectory, imageFileName)}\n" +
+					$"and if so, copy it to the snapshots-baseline directory");
+			}
 
-			bool screenshotsMatch = VisualTestingUtils.VerifyImagesSame(baselineDirectory, imageFileName, screenshotBytes, 1.0, out double percentageDifference, diffsDirectory);
-			Assert.True(screenshotsMatch, $"Screenshot different than baseline: {imageFileName} ({percentageDifference}% difference)");
+			if (!VisualTestingUtils.VerifyImagesSame(baselineDirectory, imageFileName, screenshotBytes, 0.1, out double percentageDifference, diffsDirectory))
+			{
+				Assert.Fail($"Snapshot different than baseline: {imageFileName} ({percentageDifference}% difference)");
+			}
 		}
 	}
 }
