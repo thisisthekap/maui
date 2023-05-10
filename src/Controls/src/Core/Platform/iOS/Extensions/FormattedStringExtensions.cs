@@ -212,7 +212,7 @@ namespace Microsoft.Maui.Controls.Platform
 		{
 			var glyphRange = new NSRange();
 
-			layoutManager.GetCharacterRange(characterRange, out glyphRange);
+			layoutManager.GetCharacterRange(characterRange, out NSRange glyphRange);
 
 			return layoutManager.GetBoundingRect(glyphRange, textContainer);
 		}
@@ -223,13 +223,10 @@ namespace Microsoft.Maui.Controls.Platform
 				return 0.0;
 
 			var textStorage = new NSTextStorage();
-#if __MOBILE__
+
 			if (control.AttributedText is not null)
 				textStorage.SetString(control.AttributedText.Substring(start, length));
-#else
-			if (control.AttributedStringValue is not null)
-				textStorage.SetString(control.AttributedStringValue.Substring(start, length));
-#endif
+
 			var layoutManager = new NSLayoutManager();
 			textStorage.AddLayoutManager(layoutManager);
 
