@@ -1,11 +1,36 @@
 ﻿#nullable disable
 using System;
 using Microsoft.Maui.Controls.Platform;
+using UIKit;
 
 namespace Microsoft.Maui.Controls
 {
 	public partial class Label
 	{
+		MauiLabel _mauiLabel;
+
+		private protected override void OnHandlerChangedCore()
+		{
+			base.OnHandlerChangedCore();
+
+			if (Handler is not null)
+			{
+				if (Handler is LabelHandler labelHandler && labelHandler.PlatformView is MauiLabel mauiLabel)
+				{
+					_mauiLabel = mauiLabel;
+					_mauiLabel.LayoutSubviewsChanged += OnLayoutSubviewsChanged;
+				}
+			}
+			else
+			{
+				if (_mauiLabel is not null)
+				{
+					_mauiLabel.LayoutSubviewsChanged -= OnLayoutSubviewsChanged;
+					_mauiLabel = null;
+				}
+			}
+		}
+
 		public static void MapTextType(LabelHandler handler, Label label) => MapTextType((ILabelHandler)handler, label);
 		public static void MapText(LabelHandler handler, Label label) => MapText((ILabelHandler)handler, label);
 		public static void MapCharacterSpacing(LabelHandler handler, Label label) => MapCharacterSpacing((ILabelHandler)handler, label);
@@ -13,7 +38,6 @@ namespace Microsoft.Maui.Controls
 		public static void MapLineHeight(LabelHandler handler, Label label) => MapLineHeight((ILabelHandler)handler, label);
 		public static void MapFont(LabelHandler handler, Label label) => MapFont((ILabelHandler)handler, label);
 		public static void MapTextColor(LabelHandler handler, Label label) => MapTextColor((ILabelHandler)handler, label);
-
 
 		public static void MapTextType(ILabelHandler handler, Label label)
 		{
@@ -120,6 +144,17 @@ namespace Microsoft.Maui.Controls
 				return false;
 
 			return true;
+		}
+
+		void OnLayoutSubviewsChanged(object sender, System.EventArgs e)
+		{
+			if (Handler is LabelHandler labelHandler)
+			{
+				if (labelHandler.PlatformView is not UILabel platformView || labelHandler.VirtualView is not Label virtualView)
+					return;
+
+				platformView.RecalculateSpanPositions(virtualView);
+			}
 		}
 	}
 }
