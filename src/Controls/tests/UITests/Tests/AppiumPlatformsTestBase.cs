@@ -38,7 +38,7 @@ namespace Microsoft.Maui.AppiumTests
 				File.WriteAllText(Path.Combine(logDir, $"{TestContext.CurrentContext.Test.MethodName}-PageSource.txt"), pageSource);
 
 				var screenshot = Driver?.GetScreenshot();
-				screenshot? .SaveAsFile(Path.Combine(logDir, $"{TestContext.CurrentContext.Test.MethodName}-ScreenShot.png"));
+				screenshot?.SaveAsFile(Path.Combine(logDir, $"{TestContext.CurrentContext.Test.MethodName}-ScreenShot.png"));
 			}
 
 			//this crashes on Android
@@ -46,7 +46,7 @@ namespace Microsoft.Maui.AppiumTests
 				Driver?.ResetApp();
 		}
 
-			
+
 		[OneTimeSetUp()]
 		public void OneTimeSetup()
 		{
