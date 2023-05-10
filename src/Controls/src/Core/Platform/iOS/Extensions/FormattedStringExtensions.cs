@@ -210,8 +210,6 @@ namespace Microsoft.Maui.Controls.Platform
 
 		static CGRect GetCharacterBounds(NSRange characterRange, NSLayoutManager layoutManager, NSTextContainer textContainer)
 		{
-			var glyphRange = new NSRange();
-
 			layoutManager.GetCharacterRange(characterRange, out NSRange glyphRange);
 
 			return layoutManager.GetBoundingRect(glyphRange, textContainer);
