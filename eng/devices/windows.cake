@@ -52,6 +52,35 @@ void Cleanup()
 
 Task("Cleanup");
 
+Task("Build")
+	.WithCriteria(!string.IsNullOrEmpty(PROJECT.FullPath))
+	.Does(() =>
+{
+	var name = System.IO.Path.GetFileNameWithoutExtension(PROJECT.FullPath);
+	var binlog = $"{BINLOG_DIR}/{name}-{CONFIGURATION}-windows.binlog";
+
+	SetDotNetEnvironmentVariables(DOTNET_PATH);
+
+	DotNetBuild(PROJECT.FullPath, new DotNetBuildSettings {
+		Configuration = CONFIGURATION,
+		Framework = TARGET_FRAMEWORK,
+		MSBuildSettings = new DotNetMSBuildSettings {
+			MaxCpuCount = 0
+		},
+		ToolPath = DOTNET_PATH,
+		ArgumentCustomization = args => args
+			.Append("/bl:" + binlog)
+			//.Append("/tl")
+	});
+});
+
+Task("Test")
+	.IsDependentOn("Build")
+	.Does(() =>
+{
+
+});
+
 Task("uitest")
 	.Does(() =>
 {
