@@ -1,6 +1,9 @@
 #load "../cake/helpers.cake"
 #load "../cake/dotnet.cake"
 
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
 string TARGET = Argument("target", "Test");
 
 const string defaultVersion = "10.0.19041";
@@ -26,6 +29,12 @@ var windowsVersion = Argument("apiversion", EnvironmentVariable("WINDOWS_PLATFOR
 string PLATFORM = "windows";
 string DOTNET_PLATFORM = $"win10-x64";
 bool DEVICE_CLEANUP = Argument("cleanup", true);
+
+// Package ID of the WinUI Application
+var packageId = Argument("packageid", "com.microsoft.maui.sample");
+
+// Certificate Common Name to use/generate (eg: CN=DotNetMauiTests)
+var certCN = Argument("commonname", "DotNetMAUITests");
 
 Information("Project File: {0}", PROJECT);
 Information("Build Binary Log (binlog): {0}", BINLOG_DIR);
@@ -56,29 +65,95 @@ Task("Build")
 	.WithCriteria(!string.IsNullOrEmpty(PROJECT.FullPath))
 	.Does(() =>
 {
+	// We need the key to be in LocalMachine -> TrustedPeople to install the msix signed with the key
+	var localTrustedPeopleStore = new X509Store("TrustedPeople", StoreLocation.LocalMachine);
+	localTrustedPeopleStore.Open(OpenFlags.ReadWrite);
+
+	// We need to have the key also in CurrentUser -> My so that the msix can be built and signed
+	// with the key by passing the key's thumbprint to the build
+	var currentUserMyStore = new X509Store("My", StoreLocation.CurrentUser);
+	currentUserMyStore.Open(OpenFlags.ReadWrite);
+	var certificateThumbprint = localTrustedPeopleStore.Certificates.FirstOrDefault(c => c.Subject.Contains(certCN))?.Thumbprint;
+	Information("Cert thumbprint: " + certificateThumbprint ?? "null");
+
+	if (string.IsNullOrEmpty(certificateThumbprint))
+	{
+		Information("Generating cert");
+		var rsa = RSA.Create();
+		var req = new CertificateRequest("CN=" + certCN, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+		req.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection
+		{
+			new Oid
+			{
+				Value = "1.3.6.1.5.5.7.3.3",
+				FriendlyName = "Code Signing"
+			}
+		}, false));
+		req.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, false));
+		req.CertificateExtensions.Add(
+			new X509KeyUsageExtension(
+				X509KeyUsageFlags.DigitalSignature | X509KeyUsageFlags.NonRepudiation,
+				false));
+		req.CertificateExtensions.Add(
+						new X509SubjectKeyIdentifierExtension(req.PublicKey, false));
+		var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(5));
+		if (OperatingSystem.IsWindows())
+			cert.FriendlyName = certCN;
+		var tmpCert = new X509Certificate2(cert.Export(X509ContentType.Pfx), "", X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet);
+		certificateThumbprint = tmpCert.Thumbprint;
+		localTrustedPeopleStore.Add(tmpCert);
+		currentUserMyStore.Add(tmpCert);
+	}
+	localTrustedPeopleStore.Close();
+	currentUserMyStore.Close();
+
 	var name = System.IO.Path.GetFileNameWithoutExtension(PROJECT.FullPath);
 	var binlog = $"{BINLOG_DIR}/{name}-{CONFIGURATION}-windows.binlog";
 
 	SetDotNetEnvironmentVariables(DOTNET_PATH);
 
-	DotNetBuild(PROJECT.FullPath, new DotNetBuildSettings {
-		Configuration = CONFIGURATION,
-		Framework = TARGET_FRAMEWORK,
-		MSBuildSettings = new DotNetMSBuildSettings {
-			MaxCpuCount = 0
-		},
-		ToolPath = DOTNET_PATH,
-		ArgumentCustomization = args => args
-			.Append("/bl:" + binlog)
-			//.Append("/tl")
-	});
+	// Build the app in publish mode
+	// Using the certificate thumbprint for the cert we just created
+	var s = new DotNetPublishSettings();
+	s.Configuration = "Release";
+	s.Framework = TARGET_FRAMEWORK;
+	s.MSBuildSettings = new DotNetMSBuildSettings();
+	s.MSBuildSettings.Properties.Add("RuntimeIdentifierOverride", new List<string> { "win10-x64" });
+	s.MSBuildSettings.Properties.Add("PackageCertificateThumbprint", new List<string> { certificateThumbprint });
+	s.MSBuildSettings.Properties.Add("AppxPackageSigningEnabled", new List<string> { "True" });
+	
+	DotNetPublish(PROJECT.FullPath, s);
 });
 
 Task("Test")
 	.IsDependentOn("Build")
 	.Does(() =>
 {
+	var uninstallPS = new Action(() => {
+		try {
+			StartProcess("powershell",
+				"$app = Get-AppxPackage -Name " + packageId + "; if ($app) { Remove-AppxPackage -Package $app.PackageFullName }");
+		} catch { }
+	});
 
+	// Try to uninstall the app if it exists from before
+	uninstallPS();
+
+	var projectDir = PROJECT.GetDirectory();
+	Information(projectDir.ToString());
+	var cerPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.cer").First();
+	var msixPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.msix").First();
+
+	// Install the appx
+	StartProcess("powershell", "Add-AppxPackage -Path \"" + MakeAbsolute(msixPath).FullPath + "\"");
+
+	// Start the app with 'headless' arg			
+	StartProcess("powershell", "start shell:AppsFolder\\$((Get-AppxPackage -Name \"" + packageId + "\").PackageFamilyName)!App headless");
+	
+	// TODO: Wait until xml results file exists
+
+	// Uninstall the app(this will terminate it too)
+	uninstallPS();
 });
 
 Task("uitest")
