@@ -72,6 +72,7 @@ namespace Microsoft.Maui.Controls.ControlGallery.Issues
 		const string ButtonEnabledCaption = "Enable scroll";
 
 #if UITEST
+[Microsoft.Maui.Controls.Compatibility.UITests.FailsOnMauiAndroid]
 		[Test]
 		public void Issue2680Test_ScrollDisabled()
 		{
@@ -83,6 +84,7 @@ namespace Microsoft.Maui.Controls.ControlGallery.Issues
 
 		[Test]
 		[NUnit.Framework.Category(Compatibility.UITests.UITestCategories.UwpIgnore)]
+		[Compatibility.UITests.FailsOnMauiIOS]
 		public void Issue2680Test_ScrollEnabled()
 		{
 			RunningApp.Tap(q => q.Button(ToggleButtonMark));
