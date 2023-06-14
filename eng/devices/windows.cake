@@ -12,7 +12,7 @@ const string defaultVersion = "10.0.19041";
 const string dotnetVersion = "net7.0";
 
 // required
-FilePath PROJECT = Argument("project", EnvironmentVariable("WINDOWS_TEST_PROJECT") ?? "../../src/Controls/samples/Controls.Sample.UITests/Controls.Sample.UITests.csproj");
+FilePath PROJECT = Argument("project", EnvironmentVariable("WINDOWS_TEST_PROJECT") ?? "../../src/Controls/tests/DeviceTests/Controls.DeviceTests.csproj");
 string TEST_DEVICE = Argument("device", EnvironmentVariable("WINDOWS_TEST_DEVICE") ?? $"");
 
 // optional
@@ -34,7 +34,7 @@ bool DEVICE_CLEANUP = Argument("cleanup", true);
 string certificateThumbprint = "";
 
 // Package ID of the WinUI Application
-var packageId = Argument("packageid", "com.microsoft.maui.uitests");
+var packageId = Argument("packageid", "com.microsoft.maui.controls.devicetests");
 
 // Certificate Common Name to use/generate (eg: CN=DotNetMauiTests)
 var certCN = Argument("commonname", "DotNetMAUITests");
@@ -210,7 +210,7 @@ Task("Test")
 
 	try
 	{
-		RunTests($"../../src/Controls/tests/UITests/bin/{CONFIGURATION}/{dotnetVersion}/Controls.AppiumTests.dll", settings, ctx);
+		RunTests($"../../src/Controls/tests/UITests/bin/{CONFIGURATION}/{TARGET_FRAMEWORK}/win10-x64/Microsoft.Maui.Controls.DeviceTests.dll", settings, ctx);
 	}
 	finally
 	{
