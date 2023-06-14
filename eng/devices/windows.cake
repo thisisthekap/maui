@@ -1,7 +1,7 @@
 #load "../cake/helpers.cake"
 #load "../cake/dotnet.cake"
 
-#tool nuget:?package=NUnit.ConsoleRunner&version=3.11.1
+#tool nuget:?package=NUnit.ConsoleRunner&version=3.16.3
 
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -154,7 +154,6 @@ Task("Build")
 			},
 			ToolPath = DOTNET_PATH,
 			ArgumentCustomization = args => args
-				.Append("/p:EmbedAssembliesIntoApk=true")
 				.Append("/bl:" + binlog)
 				//.Append("/tl")
 		});
@@ -167,7 +166,6 @@ Task("DeploySampleAndStart")
 	uninstallPS();
 
 	var projectDir = PROJECT.GetDirectory();
-	Information(projectDir.ToString());
 	var cerPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.cer").First();
 	var msixPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.msix").First();
 
