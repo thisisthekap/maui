@@ -1,8 +1,6 @@
 #load "../cake/helpers.cake"
 #load "../cake/dotnet.cake"
 
-#tool nuget:?package=NUnit.ConsoleRunner&version=3.16.3
-
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -142,21 +140,6 @@ Task("Build")
 	s.MSBuildSettings.Properties.Add("AppxPackageSigningEnabled", new List<string> { "True" });
 	
 	DotNetPublish(PROJECT.FullPath, s);
-
-	Information("Building UITest project");
-	// Build the UITest library
-	DotNetBuild("../../src/Controls/tests/UITests/Controls.AppiumTests.csproj", 
-        new DotNetBuildSettings {
-			Configuration = CONFIGURATION,
-			Framework = dotnetVersion,
-			MSBuildSettings = new DotNetMSBuildSettings {
-				MaxCpuCount = 0
-			},
-			ToolPath = DOTNET_PATH,
-			ArgumentCustomization = args => args
-				.Append("/bl:" + binlog)
-				//.Append("/tl")
-		});
 });
 
 Task("DeploySampleAndStart")
@@ -168,6 +151,8 @@ Task("DeploySampleAndStart")
 	var projectDir = PROJECT.GetDirectory();
 	var cerPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.cer").First();
 	var msixPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.msix").First();
+
+	Information($"Found MSIX, installing: {msixPath}");
 
 	// Install the appx
 	StartProcess("powershell", "Add-AppxPackage -Path \"" + MakeAbsolute(msixPath).FullPath + "\"");
@@ -186,31 +171,31 @@ Task("Test")
 	System.Diagnostics.Process process = null;
 	//if(!isHostedAgent)
 	//{
-		try
-		{
-			var info = new System.Diagnostics.ProcessStartInfo(@"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe")
-			{
-			};
+		// try
+		// {
+		// 	var info = new System.Diagnostics.ProcessStartInfo(@"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe")
+		// 	{
+		// 	};
 
-			process =  System.Diagnostics.Process.Start(info);
-		}
-		catch(Exception exc)
-		{
-			Information("Failed: {0}", exc);
-		}
+		// 	process =  System.Diagnostics.Process.Start(info);
+		// }
+		// catch(Exception exc)
+		// {
+		// 	Information("Failed: {0}", exc);
+		// }
 	//}
 
-	var settings = new NUnit3Settings {
-		TestParams = new Dictionary<string, string>()
-		{
-			{"IncludeScreenShots", "true"}
-		}
+	var settings = new XUnit2Settings {
+		// TestParams = new Dictionary<string, string>()
+		// {
+		// 	{"IncludeScreenShots", "true"}
+		// }
 	};
 
 
 	try
 	{
-		RunTests($"../../src/Controls/tests/UITests/bin/{CONFIGURATION}/{TARGET_FRAMEWORK}/win10-x64/Microsoft.Maui.Controls.DeviceTests.dll", settings, ctx);
+		RunTests($"../../src/Controls/tests/DeviceTests/bin/{CONFIGURATION}/{TARGET_FRAMEWORK}/win10-x64/Microsoft.Maui.Controls.DeviceTests.dll", settings, ctx);
 	}
 	finally
 	{
@@ -224,7 +209,7 @@ Task("Test")
 	}
 });
 
-void RunTests(string unitTestLibrary, NUnit3Settings settings, ICakeContext ctx)
+void RunTests(string unitTestLibrary, XUnit2Settings settings, ICakeContext ctx)
 {
     try
     {
@@ -233,7 +218,7 @@ void RunTests(string unitTestLibrary, NUnit3Settings settings, ICakeContext ctx)
         //     settings.Where = NUNIT_TEST_WHERE;
         // }
 
-        NUnit3(new [] { unitTestLibrary }, settings);
+        XUnit2(new [] { unitTestLibrary }, settings);
     }
     catch
     {
@@ -252,7 +237,7 @@ void RunTests(string unitTestLibrary, NUnit3Settings settings, ICakeContext ctx)
         foreach(System.Xml.XmlAttribute attr in root.Attributes)
         {
 			// TODO make this the Xamarin.Forms SetEnvironmentVariable overload to also set it for build pipeline?
-            SetEnvironmentVariable($"NUNIT_{attr.Name}", attr.Value);
+            SetEnvironmentVariable($"XUNIT_{attr.Name}", attr.Value);
         }
     }
 }
