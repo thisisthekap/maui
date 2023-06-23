@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,18 +7,12 @@ using Microsoft.Maui.Controls.Handlers;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Platform;
 using WNavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;
-using Xunit;
-using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
-using WFrameworkElement = Microsoft.UI.Xaml.FrameworkElement;
-
 
 namespace Microsoft.Maui.DeviceTests
 {
 	[Category(TestCategory.Shell)]
 	public partial class ShellTests
 	{
-		
-
 		List<WNavigationViewItem> GetTabBarItems(Shell shell)
 		{
 			var shellItemHandler = shell.CurrentItem.Handler as ShellItemHandler;
