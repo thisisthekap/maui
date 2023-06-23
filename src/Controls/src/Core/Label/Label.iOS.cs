@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Maui.Controls.Platform;
 using UIKit;
 
@@ -15,19 +16,38 @@ namespace Microsoft.Maui.Controls
 
 			if (Handler is not null)
 			{
-				if (Handler is LabelHandler labelHandler && labelHandler.PlatformView is MauiLabel mauiLabel)
+				ConnectHandler();
+			}
+		}
+
+		protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			base.OnPropertyChanged(propertyName);
+
+			if (propertyName == WindowProperty.PropertyName)
+			{
+				if (Window is null)
 				{
-					_mauiLabel = mauiLabel;
-					_mauiLabel.LayoutSubviewsChanged += OnLayoutSubviewsChanged;
+					DisconnectHandler();
 				}
 			}
-			else
+		}
+
+		void ConnectHandler()
+		{
+			if (Handler is LabelHandler labelHandler && labelHandler.PlatformView is MauiLabel mauiLabel)
 			{
-				if (_mauiLabel is not null)
-				{
-					_mauiLabel.LayoutSubviewsChanged -= OnLayoutSubviewsChanged;
-					_mauiLabel = null;
-				}
+				_mauiLabel = mauiLabel;
+				_mauiLabel.LayoutSubviewsChanged += OnLayoutSubviewsChanged;
+			}
+		}
+
+		void DisconnectHandler()
+		{
+			if (_mauiLabel is not null)
+			{
+				_mauiLabel.LayoutSubviewsChanged -= OnLayoutSubviewsChanged;
+				_mauiLabel = null;
 			}
 		}
 
