@@ -19,8 +19,8 @@ var TARGET_FRAMEWORK = Argument("tfm", EnvironmentVariable("TARGET_FRAMEWORK") ?
 var BINLOG_ARG = Argument("binlog", EnvironmentVariable("WINDOWS_TEST_BINLOG") ?? "");
 DirectoryPath BINLOG_DIR = string.IsNullOrEmpty(BINLOG_ARG) && !string.IsNullOrEmpty(PROJECT.FullPath) ? PROJECT.GetDirectory() : BINLOG_ARG;
 var TEST_APP = Argument("app", EnvironmentVariable("WINDOWS_TEST_APP") ?? "");
-FilePath TEST_APP_PROJECT = Argument("appproject", EnvironmentVariable("WINDOWS_TEST_APP_PROJECT") ?? "");
-var TEST_RESULTS = Argument("results", EnvironmentVariable("MAC_TEST_RESULTS") ?? "");
+FilePath TEST_APP_PROJECT = Argument("appproject", EnvironmentVariable("WINDOWS_TEST_APP_PROJECT") ?? PROJECT);
+var TEST_RESULTS = Argument("results", EnvironmentVariable("WINDOWS_TEST_RESULTS") ?? "");
 string CONFIGURATION = Argument("configuration", "Debug");
 
 var windowsVersion = Argument("apiversion", EnvironmentVariable("WINDOWS_PLATFORM_VERSION") ?? defaultVersion);
@@ -142,125 +142,77 @@ Task("Build")
 	DotNetPublish(PROJECT.FullPath, s);
 });
 
-Task("DeploySampleAndStart")
+Task("Test")
+    .IsDependentOn("Build")
+	.IsDependentOn("SetupTestPaths")
 	.Does(() =>
 {
+	CleanDirectories(TEST_RESULTS);
+
+    Information("Cleaned");
 	// Try to uninstall the app if it exists from before
 	uninstallPS();
 
+    Information("Uninstalled");
 	var projectDir = PROJECT.GetDirectory();
 	var cerPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.cer").First();
 	var msixPath = GetFiles(projectDir.FullPath + "/**/AppPackages/*/*.msix").First();
 
+    var testResultsFile = MakeAbsolute((DirectoryPath)TEST_RESULTS).FullPath.Replace("/", "\\") + "\\TestResults.xml";
+
 	Information($"Found MSIX, installing: {msixPath}");
+    Information($"Test Results File: {testResultsFile}");
+
+    if (FileExists(testResultsFile))
+        DeleteFile(testResultsFile);
 
 	// Install the appx
 	StartProcess("powershell", "Add-AppxPackage -Path \"" + MakeAbsolute(msixPath).FullPath + "\"");
 
+    var startArgs = "Start-Process shell:AppsFolder\\$((Get-AppxPackage -Name \"" + packageId + "\").PackageFamilyName)!App -Args \"" + testResultsFile + "\"";
+
+    Information(startArgs);
+
 	// Start the app with 'headless' arg			
-	StartProcess("powershell", "start shell:AppsFolder\\$((Get-AppxPackage -Name \"" + packageId + "\").PackageFamilyName)!App headless");
+	StartProcess("powershell", startArgs);
+
+    var waited = 0;
+    while (!FileExists(testResultsFile)) {
+        System.Threading.Thread.Sleep(1000);
+        waited++;
+
+        Information($"Waiting {waited} second(s) for tests to finish...");
+        if (waited >= 120)
+            break;
+    }
+
+    Information($"Tests Finished");
 });
 
-Task("Test")
-	.IsDependentOn("Build")
-	.IsDependentOn("DeploySampleAndStart")
-	.Does((ctx) =>
-{
-	// TODO: Wait until xml results file exists
 
-	System.Diagnostics.Process process = null;
-	//if(!isHostedAgent)
-	//{
-		// try
-		// {
-		// 	var info = new System.Diagnostics.ProcessStartInfo(@"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe")
-		// 	{
-		// 	};
+Task("SetupTestPaths")
+	.Does(() => {
 
-		// 	process =  System.Diagnostics.Process.Start(info);
-		// }
-		// catch(Exception exc)
-		// {
-		// 	Information("Failed: {0}", exc);
-		// }
-	//}
-
-	var settings = new XUnit2Settings {
-		// TestParams = new Dictionary<string, string>()
-		// {
-		// 	{"IncludeScreenShots", "true"}
-		// }
-	};
-
-
-	try
-	{
-		RunTests($"../../src/Controls/tests/DeviceTests/bin/{CONFIGURATION}/{TARGET_FRAMEWORK}/win10-x64/Microsoft.Maui.Controls.DeviceTests.dll", settings, ctx);
-	}
-	finally
-	{
-		try
-		{
-			process?.Kill();
-			// Uninstall the app(this will terminate it too)
-			uninstallPS();
-		}
-		catch{}
-	}
-});
-
-void RunTests(string unitTestLibrary, XUnit2Settings settings, ICakeContext ctx)
-{
-    try
-    {
-        // if(!String.IsNullOrWhiteSpace(NUNIT_TEST_WHERE))
-        // {
-        //     settings.Where = NUNIT_TEST_WHERE;
-        // }
-
-        XUnit2(new [] { unitTestLibrary }, settings);
-    }
-    catch
-    {
-        SetTestResultsEnvironmentVariables();
-        throw;
-    }
-
-    SetTestResultsEnvironmentVariables();
-
-    void SetTestResultsEnvironmentVariables()
-    {
-        var doc = new System.Xml.XmlDocument();
-        doc.Load("TestResult.xml");
-        var root = doc.DocumentElement;
-
-        foreach(System.Xml.XmlAttribute attr in root.Attributes)
-        {
-			// TODO make this the Xamarin.Forms SetEnvironmentVariable overload to also set it for build pipeline?
-            SetEnvironmentVariable($"XUNIT_{attr.Name}", attr.Value);
-        }
-    }
-}
-
-Task("uitest")
-	.Does(() =>
-{
 	if (string.IsNullOrEmpty(TEST_APP) ) {
 		if (string.IsNullOrEmpty(TEST_APP_PROJECT.FullPath))
 			throw new Exception("If no app was specified, an app must be provided.");
-		var binDir = TEST_APP_PROJECT.GetDirectory().Combine("bin").Combine(CONFIGURATION + "/" + $"{dotnetVersion}-windows{windowsVersion}").Combine(DOTNET_PLATFORM).FullPath;
-		Information("BinDir: {0}", binDir);
-		var apps = GetFiles(binDir + "/*.exe").Where(c => !c.FullPath.EndsWith("createdump.exe"));
-		TEST_APP = apps.First().FullPath;
+		TEST_APP = TEST_APP_PROJECT.GetFilenameWithoutExtension().ToString();
 	}
 	if (string.IsNullOrEmpty(TEST_RESULTS)) {
 		TEST_RESULTS = TEST_APP + "-results";
 	}
 
+	CreateDirectory(TEST_RESULTS);
+
 	Information("Test Device: {0}", TEST_DEVICE);
 	Information("Test App: {0}", TEST_APP);
 	Information("Test Results Directory: {0}", TEST_RESULTS);
+});
 
+Task("uitest")
+	.IsDependentOn("SetupTestPaths")
+	.Does(() =>
+{
 	CleanDirectories(TEST_RESULTS);
 
 	Information("Build UITests project {0}",PROJECT.FullPath);
