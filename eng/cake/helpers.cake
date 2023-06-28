@@ -122,39 +122,37 @@ bool IsTarget(string target) =>
 bool TargetStartsWith(string target) =>
     Argument<string>("target", "Default").StartsWith(target, StringComparison.InvariantCultureIgnoreCase);
 
-void RunTestWithLocalDotNet(string csproj, string configuration, string dotnetPath = null, Dictionary<string,string> argsExtra = null, bool noBuild = false)
+void RunTestsNunit(string unitTestLibrary, NUnit3Settings settings)
 {
-    var name = System.IO.Path.GetFileNameWithoutExtension(csproj);
-    var binlog = $"{GetLogDirectory()}/{name}-{configuration}.binlog";
-    var results = $"{name}-{configuration}.trx";
-
-    Information("Run Test binlog: {0}", binlog);
-
-    var settings = new DotNetCoreTestSettings
-        {
-            Configuration = configuration,
-            NoBuild = noBuild,
-            Logger = $"trx;LogFileName={results}",
-           	ResultsDirectory = GetTestResultsDirectory(),
-            //Verbosity = Cake.Common.Tools.DotNetCore.DotNetCoreVerbosity.Diagnostic,
-            ArgumentCustomization = args => 
-            { 
-                args.Append($"-bl:{binlog}");
-                if(argsExtra != null)
-                {
-                    foreach(var prop in argsExtra)
-                    {
-                        args.Append($"/p:{prop.Key}={prop.Value}");
-                    }
-                }
-                return args;
-            }
-        };
-    
-    if(!string.IsNullOrEmpty(dotnetPath))
+    try
     {
-        settings.ToolPath = dotnetPath;
+        NUnit3(new [] { unitTestLibrary }, settings);
+    }
+    catch
+    {
+        SetTestResultsEnvironmentVariables(settings.Work?.ToString());
+        throw;
     }
 
-    DotNetCoreTest(csproj, settings);
+    SetTestResultsEnvironmentVariables(settings.Work?.ToString());
+
+    void SetTestResultsEnvironmentVariables(string? path)
+    {
+        var doc = new System.Xml.XmlDocument();
+        if(string.IsNullOrEmpty(path))
+        {
+            doc.Load("TestResult.xml");
+        }
+        else
+        {
+            doc.Load($"{path}/TestResult.xml");
+        }
+                
+        var root = doc.DocumentElement;
+
+        foreach(System.Xml.XmlAttribute attr in root.Attributes)
+        {
+            SetEnvironmentVariable($"NUNIT_{attr.Name}", attr.Value);
+        }
+    }
 }

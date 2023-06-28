@@ -14,13 +14,10 @@ steps:
   - template: provision.yml
     parameters:
       ${{ if eq(parameters.platform, 'windows') }}:
-        platform: windows
         skipProvisioning: true
       ${{ if ne(parameters.platform, 'windows') }}:
-        platform: macos
         skipProvisioning: false
       skipXcode: false
-        
       provisionatorChannel: ${{ parameters.provisionatorChannel }}
 
   - task: PowerShell@2
@@ -39,30 +36,7 @@ steps:
       versionSpec: "18.13.0"
     displayName: "Install node"
 
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      script: |
-        node -v
-        npm install -g appium@2.0.0-beta.61
-        appium -v
-        $x = appium driver list --installed --json  | ConvertFrom-Json
-        if(!$x.windows)
-        {
-            appium driver install --source=npm appium-windows-driver
-        }
-        if(!$x.uiautomator2)
-        {
-            appium driver install uiautomator2
-        }
-        if(!$x.xcuitest)
-        {
-            appium driver install xcuitest
-        }
-        if(!$x.mac2)
-        {
-            appium driver install mac2
-        }
+  - pwsh: ./eng/scripts/appium-install.ps1
     displayName: "Install Appium"
     continueOnError: true
 
@@ -82,11 +56,6 @@ steps:
   - pwsh: ./build.ps1 --target=dotnet-samples --configuration="${{ parameters.configuration }}" --${{ parameters.platform }} --verbosity=diagnostic --usenuget=false
     displayName: 'Build the samples'
 
-  # - bash: |
-  #     sudo xcode-select --reset
-  #   displayName: 'XCode reset'
-  #   condition: ne('${{ parameters.platform }}' , 'windows')
-
   - pwsh: ./build.ps1 -Script eng/devices/${{ parameters.platform }}.cake --target=uitest --project="${{ parameters.path }}" --appproject="${{ parameters.app }}" --device="${{ parameters.device }}" --apiversion="${{ parameters.version }}" --configuration="${{ parameters.configuration }}" --results="$(TestResultsDirectory)" --binlog="$(LogDirectory)" ${{ parameters.cakeArgs }} --verbosity=diagnostic
     displayName: $(Agent.JobName)
     retryCountOnTaskFailure: 2
@@ -98,6 +67,7 @@ steps:
       testResultsFormat: VSTest
       testResultsFiles: '$(TestResultsDirectory)/*.trx'
       testRunTitle: '$(System.PhaseName)'
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
