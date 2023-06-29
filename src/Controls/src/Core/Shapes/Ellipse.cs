@@ -13,20 +13,6 @@ namespace Microsoft.Maui.Controls.Shapes
 			Aspect = Stretch.Fill;
 		}
 
-		// TODO this should move to a remapped mapper
-		protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			base.OnPropertyChanged(propertyName);
-
-			if (propertyName == XProperty.PropertyName ||
-				propertyName == YProperty.PropertyName ||
-				propertyName == WidthProperty.PropertyName ||
-				propertyName == HeightProperty.PropertyName)
-			{
-				Handler?.UpdateValue(nameof(IShapeView.Shape));
-			}
-		}
-
 		public override PathF GetPath()
 		{
 			var width = WidthForPathComputation;

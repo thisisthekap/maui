@@ -101,7 +101,7 @@ namespace Microsoft.Maui.Controls.Shapes
 
 			if (propertyName == DataProperty.PropertyName)
 			{
-				Handler?.UpdateValue(nameof(IShapeView.Shape));
+				UpdateShape(sizeChanged: true);
 			}
 		}
 

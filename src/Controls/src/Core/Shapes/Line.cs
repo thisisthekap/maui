@@ -73,7 +73,7 @@ namespace Microsoft.Maui.Controls.Shapes
 				propertyName == Y1Property.PropertyName ||
 				propertyName == X2Property.PropertyName ||
 				propertyName == Y2Property.PropertyName)
-				Handler?.UpdateValue(nameof(IShapeView.Shape));
+				UpdateShape(sizeChanged: true);
 		}
 
 		public override PathF GetPath()

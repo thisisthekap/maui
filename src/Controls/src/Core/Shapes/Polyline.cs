@@ -44,9 +44,14 @@ namespace Microsoft.Maui.Controls.Shapes
 		{
 			base.OnPropertyChanged(propertyName);
 
-			if (propertyName == PointsProperty.PropertyName ||
-				propertyName == FillRuleProperty.PropertyName)
-				Handler?.UpdateValue(nameof(IShapeView.Shape));
+			if (propertyName == PointsProperty.PropertyName)
+			{
+				UpdateShape(sizeChanged: true);
+			}
+			else if (propertyName == FillRuleProperty.PropertyName)
+			{
+				UpdateShape(sizeChanged: false);
+			}
 		}
 
 		public override PathF GetPath()

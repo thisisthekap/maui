@@ -50,7 +50,7 @@ namespace Microsoft.Maui.Controls.Shapes
 			base.OnPropertyChanged(propertyName);
 
 			if (propertyName == CornerRadiusProperty.PropertyName)
-				Handler?.UpdateValue(nameof(IShapeView.Shape));
+				UpdateShape(sizeChanged: false);
 		}
 
 		public override PathF GetPath()

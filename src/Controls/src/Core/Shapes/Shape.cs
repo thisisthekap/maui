@@ -1,7 +1,7 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Numerics;
+using Microsoft.Maui.Controls.Internals;
 using Microsoft.Maui.Graphics;
 
 namespace Microsoft.Maui.Controls.Shapes
@@ -359,6 +359,23 @@ namespace Microsoft.Maui.Controls.Shapes
 
 			if (Stroke is not null)
 				SetInheritedBindingContext(Stroke, BindingContext);
+		}
+
+		protected void UpdateShape(bool sizeChanged)
+		{
+			Handler?.UpdateValue(nameof(IShapeView.Shape));
+
+			if (sizeChanged && IsLoaded)
+			{
+				// If the size is purely based on the shape, then the parent view will need layout
+				// invalidated in order to pick up the new size.
+				var desiredSize = base.MeasureOverride(double.PositiveInfinity, double.PositiveInfinity);
+				if (desiredSize == Size.Zero)
+				{
+					// Pretending that margins changed will invalidate the parent's layout.
+					InvalidateMeasureInternal(InvalidationTrigger.MarginChanged);
+				}
+			}
 		}
 
 		protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
