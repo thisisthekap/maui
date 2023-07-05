@@ -13,6 +13,9 @@ namespace Microsoft.Maui.Controls.Platform
 			shapeDrawable.UpdateWindingMode(windingMode);
 
 			platformView.Drawable = shapeDrawable;
+
+			// Allow Shape.MeasureOverride to compute the new drawable's size
+			platformView.Bounds = CoreGraphics.CGRect.Empty;
 		}
 	}
 }
