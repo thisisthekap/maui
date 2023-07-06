@@ -2,53 +2,20 @@
 using System;
 using System.Runtime.CompilerServices;
 using Microsoft.Maui.Controls.Platform;
+using Microsoft.Maui.Graphics;
 using UIKit;
 
 namespace Microsoft.Maui.Controls
 {
 	public partial class Label
 	{
-		MauiLabel _mauiLabel;
-
-		private protected override void OnHandlerChangedCore()
+		protected override Size ArrangeOverride(Rect bounds)
 		{
-			base.OnHandlerChangedCore();
+			var size = base.ArrangeOverride(bounds);
 
-			if (Handler is not null)
-			{
-				ConnectHandler();
-			}
-		}
+			RecalculateSpanPositions();
 
-		protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			base.OnPropertyChanged(propertyName);
-
-			if (propertyName == WindowProperty.PropertyName)
-			{
-				if (Window is null)
-				{
-					DisconnectHandler();
-				}
-			}
-		}
-
-		void ConnectHandler()
-		{
-			if (Handler is LabelHandler labelHandler && labelHandler.PlatformView is MauiLabel mauiLabel)
-			{
-				_mauiLabel = mauiLabel;
-				_mauiLabel.LayoutSubviewsChanged += OnLayoutSubviewsChanged;
-			}
-		}
-
-		void DisconnectHandler()
-		{
-			if (_mauiLabel is not null)
-			{
-				_mauiLabel.LayoutSubviewsChanged -= OnLayoutSubviewsChanged;
-				_mauiLabel = null;
-			}
+			return size;
 		}
 
 		public static void MapTextType(LabelHandler handler, Label label) => MapTextType((ILabelHandler)handler, label);
@@ -166,7 +133,7 @@ namespace Microsoft.Maui.Controls
 			return true;
 		}
 
-		void OnLayoutSubviewsChanged(object sender, System.EventArgs e)
+		void RecalculateSpanPositions()
 		{
 			if (Handler is LabelHandler labelHandler)
 			{
