@@ -55,10 +55,16 @@ steps:
     - pwsh: ./build.ps1 --target=dotnet-buildtasks --configuration="Release"
       displayName: 'Build the MSBuild Tasks'
 
-  - pwsh: ./build.ps1 -Script eng/devices/${{ parameters.platform }}.cake --project="${{ parameters.path }}" --device=${{ parameters.device }} --results="$(TestResultsDirectory)" --binlog="$(LogDirectory)" ${{ parameters.cakeArgs }}
-    displayName: $(Agent.JobName)
-    workingDirectory: ${{ parameters.checkoutDirectory }}
-    retryCountOnTaskFailure: 2
+  - ${{ if ne(parameters.platform, 'windows') }}:
+    - pwsh: ./build.ps1 -Script eng/devices/${{ parameters.platform }}.cake --project="${{ parameters.path }}" --device=${{ parameters.device }} --results="$(TestResultsDirectory)" --binlog="$(LogDirectory)" ${{ parameters.cakeArgs }}
+      displayName: $(Agent.JobName)
+      workingDirectory: ${{ parameters.checkoutDirectory }}
+      retryCountOnTaskFailure: 2
+  - ${{ else }}:
+    - pwsh: ./build.ps1 -Script eng/devices/${{ parameters.platform }}.cake --binlog="$(LogDirectory)" ${{ parameters.cakeArgs }}
+      displayName: $(Agent.JobName)
+      workingDirectory: ${{ parameters.checkoutDirectory }}
+      retryCountOnTaskFailure: 2
 
   - task: PublishTestResults@2
     displayName: Publish the $(System.PhaseName) test results
