@@ -92,11 +92,11 @@ stages:
   - stage: windows_device_tests
     displayName: Windows Device Tests
     dependsOn: []
-    job:
+    jobs:
     - job: windows_device_tests
       workspace:
         clean: all
-      displayName: "iOS simulator tests"
+      displayName: "Windows device tests"
       steps:
           - template: device-tests-steps.yml
             parameters:
