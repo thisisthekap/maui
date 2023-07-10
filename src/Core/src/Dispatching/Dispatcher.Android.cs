@@ -1,5 +1,7 @@
 ﻿using System;
 using Android.OS;
+using Android.Systems;
+using Java.Lang;
 
 namespace Microsoft.Maui.Dispatching
 {
@@ -34,6 +36,8 @@ namespace Microsoft.Maui.Dispatching
 	partial class DispatcherTimer : IDispatcherTimer
 	{
 		readonly Handler _handler;
+		readonly IRunnable _runnable;
+		bool _hasCallbacks;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DispatcherTimer"/> class.
@@ -41,6 +45,7 @@ namespace Microsoft.Maui.Dispatching
 		/// <param name="handler">The handler for this dispatcher to use.</param>
 		public DispatcherTimer(Handler handler)
 		{
+			_runnable = new Runnable(OnTimerTick);
 			_handler = handler;
 		}
 
@@ -64,7 +69,32 @@ namespace Microsoft.Maui.Dispatching
 
 			IsRunning = true;
 
-			_handler.PostDelayed(OnTimerTick, (long)Interval.TotalMilliseconds);
+			Post();
+		}
+
+		void Post()
+		{
+			if (IsCallbackPosted())
+			{
+				return;
+			}
+
+			_handler.PostDelayed(_runnable, (long)Interval.TotalMilliseconds);
+
+			if (!OperatingSystem.IsAndroidVersionAtLeast(29))
+			{
+				_hasCallbacks = true;
+			}
+		}
+
+		bool IsCallbackPosted()
+		{
+			if (OperatingSystem.IsAndroidVersionAtLeast(29) && _handler.HasCallbacks(_runnable))
+			{
+				return true;
+			}
+
+			return _hasCallbacks;
 		}
 
 		/// <inheritdoc/>
@@ -75,18 +105,34 @@ namespace Microsoft.Maui.Dispatching
 
 			IsRunning = false;
 
-			_handler.RemoveCallbacks(OnTimerTick);
+			_handler.RemoveCallbacks(_runnable);
+
+			if (!OperatingSystem.IsAndroidVersionAtLeast(29))
+			{
+				_hasCallbacks = false;
+			}
 		}
 
 		void OnTimerTick()
 		{
 			if (!IsRunning)
 				return;
+			
+			if (!OperatingSystem.IsAndroidVersionAtLeast(29))
+			{
+				_hasCallbacks = false;
+			}
 
 			Tick?.Invoke(this, EventArgs.Empty);
 
 			if (IsRepeating)
-				_handler.PostDelayed(OnTimerTick, (long)Interval.TotalMilliseconds);
+			{
+				Post();
+			}
+			else
+			{
+				Stop();
+			}
 		}
 	}
 
