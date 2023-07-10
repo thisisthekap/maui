@@ -166,6 +166,13 @@ Task("Test")
     if (FileExists(testResultsFile))
         DeleteFile(testResultsFile);
 
+	// Install dependencies
+	var dependencies = GetFiles("./**/AppPackages/**/Dependencies/x64/*.msix");
+    foreach (var dep in dependencies) {
+        Information("Installing Dependency msix: {0}", dep);
+        StartProcess("powershell", "Add-AppxPackage -Path \"" + MakeAbsolute(dep).FullPath + "\"");
+    }
+
 	// Install the appx
 	StartProcess("powershell", "Add-AppxPackage -Path \"" + MakeAbsolute(msixPath).FullPath + "\"");
 
