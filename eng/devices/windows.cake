@@ -167,7 +167,7 @@ Task("Test")
         DeleteFile(testResultsFile);
 
 	// Install dependencies
-	var dependencies = GetFiles("./**/AppPackages/**/Dependencies/x64/*.msix");
+	var dependencies = GetFiles(projectDir.FullPath + "/**/AppPackages/**/Dependencies/x64/*.msix");
     foreach (var dep in dependencies) {
         Information("Installing Dependency msix: {0}", dep);
         StartProcess("powershell", "Add-AppxPackage -Path \"" + MakeAbsolute(dep).FullPath + "\"");
