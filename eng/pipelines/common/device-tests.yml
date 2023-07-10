@@ -97,6 +97,8 @@ stages:
       workspace:
         clean: all
       displayName: "Windows device tests"
+      pool:
+        vmImage: windows-latest
       steps:
           - template: device-tests-steps.yml
             parameters:
