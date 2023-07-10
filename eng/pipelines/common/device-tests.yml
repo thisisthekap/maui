@@ -103,8 +103,6 @@ stages:
           - template: device-tests-steps.yml
             parameters:
               platform: windows
-              path: $(PROJECT_PATH)
-              device: $(DEVICE)
               provisionatorChannel: ${{ parameters.provisionatorChannel }}
               agentPoolAccessToken: ${{ parameters.agentPoolAccessToken }}
               artifactName: ${{ parameters.artifactName }}
