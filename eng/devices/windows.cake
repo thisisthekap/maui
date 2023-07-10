@@ -193,6 +193,11 @@ Task("Test")
             break;
     }
 
+	if(!FileExists(testResultsFile))
+	{
+		throw new Exception($"Test results file not found after {waited} seconds, process might have crashed or not completed yet.");
+	}
+
     Information($"Tests Finished");
 });
 
