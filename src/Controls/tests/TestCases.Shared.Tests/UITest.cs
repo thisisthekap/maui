@@ -10,7 +10,7 @@ using VisualTestUtils.MagickNet;
 namespace Microsoft.Maui.TestCases.Tests
 {
 #if ANDROID
-		[TestFixture(TestDevice.Android)]
+	[TestFixture(TestDevice.Android)]
 #elif IOSUITEST
 		[TestFixture(TestDevice.iOS)]
 #elif MACUITEST
@@ -108,7 +108,7 @@ namespace Microsoft.Maui.TestCases.Tests
 			void Verify(string? name)
 			{
 				string deviceName = GetTestConfig().GetProperty<string>("DeviceName") ?? string.Empty;
-				
+
 				// Remove the XHarness suffix if present
 				deviceName = deviceName.Replace(" - created by XHarness", "", StringComparison.Ordinal);
 
@@ -223,7 +223,7 @@ namespace Microsoft.Maui.TestCases.Tests
 		{
 			base.TestSetup();
 			var device = App.GetTestDevice();
-			if(device == TestDevice.Android || device == TestDevice.iOS)
+			if (device == TestDevice.Android || device == TestDevice.iOS)
 			{
 				App.SetOrientationPortrait();
 			}
