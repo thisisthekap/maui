@@ -17,7 +17,7 @@ namespace Microsoft.Maui.Resizetizer
 			span[0] = new SKPoint();
 		}
 
-		public static SkiaSharpTools Create(bool isVector, string filename, SKSize? baseSize, SKColor? backgroundColor, SKColor? tintColor, SKFilterQuality? filterQuality, ILogger logger)
+		public static SkiaSharpTools Create(bool isVector, string filename, SKSize? baseSize, SKColor? backgroundColor, SKColor? tintColor, SKFilterQuality filterQuality, ILogger logger)
 			=> isVector
 				? new SkiaSharpSvgTools(filename, baseSize, backgroundColor, tintColor, filterQuality, logger) as SkiaSharpTools
 				: new SkiaSharpBitmapTools(filename, baseSize, backgroundColor, tintColor, filterQuality, logger);
@@ -30,7 +30,7 @@ namespace Microsoft.Maui.Resizetizer
 		{
 		}
 
-		public SkiaSharpTools(string filename, SKSize? baseSize, SKColor? backgroundColor, SKColor? tintColor, SKFilterQuality? filterQuality, ILogger logger)
+		public SkiaSharpTools(string filename, SKSize? baseSize, SKColor? backgroundColor, SKColor? tintColor, SKFilterQuality filterQuality, ILogger logger)
 		{
 			Logger = logger;
 			Filename = filename;
@@ -38,7 +38,7 @@ namespace Microsoft.Maui.Resizetizer
 			BackgroundColor = backgroundColor;
 			Paint = new SKPaint
 			{
-				FilterQuality = filterQuality ?? SKFilterQuality.High
+				FilterQuality = filterQuality
 			};
 
 			if (tintColor is SKColor tint)

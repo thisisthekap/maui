@@ -13,7 +13,7 @@ namespace Microsoft.Maui.Resizetizer
 		{
 		}
 
-		public SkiaSharpBitmapTools(string filename, SKSize? baseSize, SKColor? backgroundColor, SKColor? tintColor, SKFilterQuality? filterQuality, ILogger logger)
+		public SkiaSharpBitmapTools(string filename, SKSize? baseSize, SKColor? backgroundColor, SKColor? tintColor, SKFilterQuality filterQuality, ILogger logger)
 			: base(filename, baseSize, backgroundColor, tintColor, filterQuality, logger)
 		{
 			var sw = new Stopwatch();
